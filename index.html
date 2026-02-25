@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[rudv-ar]</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;600;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="src/css/style.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- SCANLINE OVERLAY -->
+<div class="scanlines" aria-hidden="true"></div>
+<div class="noise" aria-hidden="true"></div>
+<div class="corner tl" aria-hidden="true"></div>
+<div class="corner tr" aria-hidden="true"></div>
+<div class="corner bl" aria-hidden="true"></div>
+<div class="corner br" aria-hidden="true"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="sidebar-logo">[rudv-ar]</div>
+        <div class="sidebar-sub">COMMAND NODE v1.0</div>
+        <div class="status-pill"><span class="pulse-dot"></span>ONLINE</div>
+    </div>
+
+    <nav class="sidebar-nav">
+        <button class="nav-tab active" data-section="landing" onclick="switchTab('landing', this)">
+            <i class="fas fa-crosshairs"></i>
+            <span>HOME BASE</span>
+        </button>
+        <button class="nav-tab" data-section="profile" onclick="switchTab('profile', this)">
+            <i class="fas fa-fingerprint"></i>
+            <span>DOSSIER</span>
+        </button>
+        <button class="nav-tab" data-section="skills" onclick="switchTab('skills', this)">
+            <i class="fas fa-terminal"></i>
+            <span>CAPABILITIES</span>
+        </button>
+        <button class="nav-tab" data-section="projects" onclick="switchTab('projects', this)">
+            <i class="fas fa-lock"></i>
+            <span>OPERATIONS</span>
+        </button>
+        <button class="nav-tab" data-section="systems" onclick="switchTab('systems', this)">
+            <i class="fas fa-server"></i>
+            <span>SYSTEMS</span>
+        </button>
+        <button class="nav-tab" data-section="contact" onclick="switchTab('contact', this)">
+            <i class="fas fa-key"></i>
+            <span>COMMS</span>
+        </button>
+    </nav>
+
+    <div class="sidebar-footer">
+        <div class="coord-display">
+            <span class="coord-label">COORDS</span>
+            <span class="coord-val">31.0675°N 81.3119°E</span>
+        </div>
+        <div class="clock-display" id="clock">--:--:--</div>
+    </div>
+</aside>
+
+<!-- MOBILE TOPBAR -->
+<div class="topbar">
+    <button class="menu-btn" id="menuBtn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    <span class="topbar-logo">[rudv-ar]</span>
+    <span class="topbar-status"><span class="pulse-dot sm"></span>ONLINE</span>
+</div>
+
+<!-- MAIN CONTENT -->
+<main class="main" id="main">
+
+    <!-- ─── LANDING ─────────────────────────────────────── -->
+    <section class="section active" id="landing">
+        <div class="landing-wrap">
+            <div class="landing-frame">
+                <div class="hex-ring" aria-hidden="true">
+                    <div class="hex-ring-inner"></div>
+                </div>
+                <div class="profile-photo-wrap">
+                    <img src="src/img/profile.jpg" alt="[rudv-ar]" class="profile-photo" id="profileImg"
+                         onerror="this.style.display='none'; document.getElementById('photoFallback').style.display='flex';">
+                    <div class="photo-fallback" id="photoFallback">
+                        <i class="fas fa-user-secret"></i>
+                    </div>
+                    <div class="photo-scan" aria-hidden="true"></div>
+                </div>
+                <div class="landing-id">
+                    <div class="landing-callsign">
+                        <span class="bracket">[</span>rudv-ar<span class="bracket">]</span>
+                    </div>
+                    <div class="landing-title">SYSTEMS ARCHITECT · CYBER-BIO-MILNET</div>
+                    <div class="landing-loc"><i class="fas fa-location-dot"></i> The Greater Himalayas, India</div>
+                    <div class="landing-tags">
+                        <span class="ltag">ARCH LINUX</span>
+                        <span class="ltag">BSPWM</span>
+                        <span class="ltag">PENETRATION TESTING</span>
+                        <span class="ltag">OPEN SOURCE</span>
+                    </div>
+                    <div class="landing-doctrine">
+                        <span class="doctrine-label">DOCTRINE</span>
+                        <span class="doctrine-text">Gita 2.47 · Boundless Action · Manual mastery before automation</span>
+                    </div>
+                    <div class="landing-status-row">
+                        <div class="lst-item">
+                            <div class="lst-label">STATUS</div>
+                            <div class="lst-val dormant">DORMANT</div>
+                        </div>
+                        <div class="lst-item">
+                            <div class="lst-label">ACTIVE FROM</div>
+                            <div class="lst-val">APR 2026</div>
+                        </div>
+                        <div class="lst-item">
+                            <div class="lst-label">READINESS</div>
+                            <div class="lst-val">15%</div>
+                        </div>
+                    </div>
+                    <div class="landing-actions">
+                        <button class="cta-btn primary" onclick="switchTab('projects', document.querySelector('[data-section=projects]'))">
+                            <i class="fas fa-lock"></i> VIEW OPERATIONS
+                        </button>
+                        <button class="cta-btn secondary" onclick="switchTab('contact', document.querySelector('[data-section=contact]'))">
+                            <i class="fas fa-key"></i> OPEN COMMS
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── DOSSIER ──────────────────────────────────────── -->
+    <section class="section" id="profile">
+        <div class="section-hdr">
+            <div class="section-hdr-line"></div>
+            <div class="section-hdr-text"><i class="fas fa-fingerprint"></i> DOSSIER</div>
+            <div class="section-hdr-line"></div>
+        </div>
+
+        <div class="grid-2">
+            <div class="panel">
+                <div class="panel-title">IDENTIFICATION</div>
+                <div class="kv-list">
+                    <div class="kv"><span class="kv-k">CALL SIGN</span><span class="kv-v">[rudv-ar]</span></div>
+                    <div class="kv"><span class="kv-k">LOCATION</span><span class="kv-v">Greater Himalayas, India</span></div>
+                    <div class="kv"><span class="kv-k">FOCUS</span><span class="kv-v">Mil / Bio-Cybersecurity</span></div>
+                    <div class="kv"><span class="kv-k">PRIMARY OS</span><span class="kv-v">Arch Linux (custom)</span></div>
+                    <div class="kv"><span class="kv-k">WM</span><span class="kv-v">Bspwm + Sxhkd + Polybar</span></div>
+                    <div class="kv"><span class="kv-k">SHELL</span><span class="kv-v">Bash / Zsh</span></div>
+                    <div class="kv"><span class="kv-k">EDITOR</span><span class="kv-v">Neovim</span></div>
+                    <div class="kv"><span class="kv-k">TERMINAL</span><span class="kv-v">Alacritty</span></div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-title">OPERATIONAL VALUES</div>
+                <div class="value-list">
+                    <div class="value-item">
+                        <div class="value-icon"><i class="fas fa-crosshairs"></i></div>
+                        <div class="value-body">
+                            <div class="value-name">MASTERY FIRST</div>
+                            <div class="value-desc">Deep understanding before using any tool</div>
+                        </div>
+                    </div>
+                    <div class="value-item">
+                        <div class="value-icon"><i class="fas fa-sliders"></i></div>
+                        <div class="value-body">
+                            <div class="value-name">CONTROL ARCHITECTURE</div>
+                            <div class="value-desc">Manual setup. Strategic automation only.</div>
+                        </div>
+                    </div>
+                    <div class="value-item">
+                        <div class="value-icon"><i class="fas fa-bullseye"></i></div>
+                        <div class="value-body">
+                            <div class="value-name">PRECISION EXECUTION</div>
+                            <div class="value-desc">Deliberate planning and careful implementation</div>
+                        </div>
+                    </div>
+                    <div class="value-item">
+                        <div class="value-icon"><i class="fas fa-rotate"></i></div>
+                        <div class="value-body">
+                            <div class="value-name">FAILURE-DRIVEN INTEL</div>
+                            <div class="value-desc">Systematic troubleshooting and documentation</div>
+                        </div>
+                    </div>
+                    <div class="value-item">
+                        <div class="value-icon"><i class="fas fa-shield-halved"></i></div>
+                        <div class="value-body">
+                            <div class="value-name">SYSTEM DOMINANCE</div>
+                            <div class="value-desc">Complete knowledge of every configuration</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel mt">
+            <div class="panel-title">TECHNICAL FOUNDATION</div>
+            <div class="tf-grid">
+                <div class="tf-item">
+                    <div class="tf-cat"><i class="fab fa-linux"></i> OS ADMIN</div>
+                    <p>Arch Linux package management, kernel configuration, system hardening</p>
+                </div>
+                <div class="tf-item">
+                    <div class="tf-cat"><i class="fas fa-table-cells-large"></i> WINDOW MGMT</div>
+                    <p>Bspwm rice optimization, polybar customization, keybinding architecture</p>
+                </div>
+                <div class="tf-item">
+                    <div class="tf-cat"><i class="fas fa-shield-halved"></i> SECURITY</div>
+                    <p>Penetration testing fundamentals, vulnerability assessment, threat modeling</p>
+                </div>
+                <div class="tf-item">
+                    <div class="tf-cat"><i class="fas fa-code"></i> DEVELOPMENT</div>
+                    <p>Bash scripting, Python automation, HTML/CSS/JavaScript</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── CAPABILITIES ─────────────────────────────────── -->
+    <section class="section" id="skills">
+        <div class="section-hdr">
+            <div class="section-hdr-line"></div>
+            <div class="section-hdr-text"><i class="fas fa-terminal"></i> CAPABILITIES</div>
+            <div class="section-hdr-line"></div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">SKILL MATRIX</div>
+            <div class="skill-matrix">
+                <div class="skill-row">
+                    <span class="skill-name">Linux Internals & Administration</span>
+                    <div class="skill-bar-wrap">
+                        <div class="skill-bar" style="--pct:10%"></div>
+                    </div>
+                    <span class="skill-pct">10%</span>
+                </div>
+                <div class="skill-row">
+                    <span class="skill-name">Networking & Protocol Analysis</span>
+                    <div class="skill-bar-wrap">
+                        <div class="skill-bar" style="--pct:3%"></div>
+                    </div>
+                    <span class="skill-pct">3%</span>
+                </div>
+                <div class="skill-row">
+                    <span class="skill-name">Penetration Testing & Enumeration</span>
+                    <div class="skill-bar-wrap">
+                        <div class="skill-bar" style="--pct:2%"></div>
+                    </div>
+                    <span class="skill-pct">2%</span>
+                </div>
+                <div class="skill-row">
+                    <span class="skill-name">Web Exploitation & Analysis</span>
+                    <div class="skill-bar-wrap">
+                        <div class="skill-bar" style="--pct:2%"></div>
+                    </div>
+                    <span class="skill-pct">2%</span>
+                </div>
+                <div class="skill-row">
+                    <span class="skill-name">Bash Scripting & Automation</span>
+                    <div class="skill-bar-wrap">
+                        <div class="skill-bar" style="--pct:7%"></div>
+                    </div>
+                    <span class="skill-pct">7%</span>
+                </div>
+                <div class="skill-row">
+                    <span class="skill-name">Rust Foundations</span>
+                    <div class="skill-bar-wrap">
+                        <div class="skill-bar" style="--pct:4%"></div>
+                    </div>
+                    <span class="skill-pct">4%</span>
+                </div>
+                <div class="skill-row">
+                    <span class="skill-name">Python Systems Programming</span>
+                    <div class="skill-bar-wrap">
+                        <div class="skill-bar" style="--pct:15%"></div>
+                    </div>
+                    <span class="skill-pct">15%</span>
+                </div>
+                <div class="skill-row">
+                    <span class="skill-name">Frontend Development (HTML/CSS/JS)</span>
+                    <div class="skill-bar-wrap">
+                        <div class="skill-bar" style="--pct:20%"></div>
+                    </div>
+                    <span class="skill-pct">20%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="arsenal-grid mt">
+            <div class="arsenal-card">
+                <div class="arsenal-icon"><i class="fas fa-scroll"></i></div>
+                <div class="arsenal-cat">SCRIPTING</div>
+                <div class="arsenal-items">Bash · Zsh · Python · Lua · Node.js</div>
+            </div>
+            <div class="arsenal-card">
+                <div class="arsenal-icon"><i class="fas fa-bug"></i></div>
+                <div class="arsenal-cat">SECURITY</div>
+                <div class="arsenal-items">Nmap · John · Metasploit</div>
+            </div>
+            <div class="arsenal-card">
+                <div class="arsenal-icon"><i class="fas fa-globe"></i></div>
+                <div class="arsenal-cat">WEB STACK</div>
+                <div class="arsenal-items">HTML/CSS · JavaScript · Three.js</div>
+            </div>
+            <div class="arsenal-card">
+                <div class="arsenal-icon"><i class="fas fa-box"></i></div>
+                <div class="arsenal-cat">DEVOPS</div>
+                <div class="arsenal-items">Git · Docker · Pacman · APT</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── OPERATIONS ───────────────────────────────────── -->
+    <section class="section" id="projects">
+        <div class="section-hdr">
+            <div class="section-hdr-line"></div>
+            <div class="section-hdr-text"><i class="fas fa-lock"></i> ACTIVE OPERATIONS</div>
+            <div class="section-hdr-line"></div>
+        </div>
+
+        <div class="ops-grid">
+
+            <div class="op-card">
+                <div class="op-card-accent"></div>
+                <div class="op-status-badge deployed">DEPLOYED</div>
+                <div class="op-icon"><i class="fas fa-globe"></i></div>
+                <div class="op-name">rudv-ar WEB PORTFOLIO</div>
+                <div class="op-codename">THIS WEBSITE</div>
+                <div class="op-desc">
+                    Responsive military-themed cybersecurity portfolio. Vanilla HTML/CSS/JS, modular sidebar navigation, real-time status displays. CSS stylesheet dynamically generated. HTML fully authored by self. Template-grade stylesheet reusable across projects.
+                </div>
+                <div class="op-tags">
+                    <span class="op-tag">HTML/CSS</span>
+                    <span class="op-tag">JavaScript</span>
+                    <span class="op-tag">Responsive</span>
+                    <span class="op-tag">UI Design</span>
+                </div>
+                <div class="op-links">
+                    <a href="https://rudv-ar.github.io/" class="op-link" target="_blank"><i class="fas fa-link"></i> Live</a>
+                    <a href="https://github.com/rudv-ar/rudv-ar.github.io.git" class="op-link" target="_blank"><i class="fab fa-github"></i> Source</a>
+                </div>
+            </div>
+
+            <div class="op-card">
+                <div class="op-card-accent"></div>
+                <div class="op-status-badge ongoing">IN DEVELOPMENT</div>
+                <div class="op-icon"><i class="fas fa-dna"></i></div>
+                <div class="op-name">DENDEC</div>
+                <div class="op-codename">OPERATIONAL FRAMEWORK</div>
+                <div class="op-desc">
+                    A defensive and decentralized systems framework operating at the intersection of cybersecurity and biological threat intelligence. Architecture designed for resilience, modularity, and covert operational capability. Details classified.
+                </div>
+                <div class="op-tags">
+                    <span class="op-tag">Cyber-Bio</span>
+                    <span class="op-tag">Framework</span>
+                    <span class="op-tag">Decentralized</span>
+                    <span class="op-tag">Defense</span>
+                </div>
+                <div class="op-links">
+                    <a href="#" class="op-link disabled"><i class="fas fa-lock"></i> Classified</a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ─── SYSTEMS ──────────────────────────────────────── -->
+    <section class="section" id="systems">
+        <div class="section-hdr">
+            <div class="section-hdr-line"></div>
+            <div class="section-hdr-text"><i class="fas fa-server"></i> SYSTEMS</div>
+            <div class="section-hdr-line"></div>
+        </div>
+
+        <div class="grid-2">
+            <div class="panel">
+                <div class="panel-title">HARDWARE STACK</div>
+                <div class="kv-list">
+                    <div class="kv"><span class="kv-k">OS</span><span class="kv-v">Arch Linux (rolling, custom)</span></div>
+                    <div class="kv"><span class="kv-k">WM</span><span class="kv-v">Bspwm + Sxhkd</span></div>
+                    <div class="kv"><span class="kv-k">SHELL</span><span class="kv-v">Bash / Zsh</span></div>
+                    <div class="kv"><span class="kv-k">TERMINAL</span><span class="kv-v">Alacritty</span></div>
+                    <div class="kv"><span class="kv-k">EDITOR</span><span class="kv-v">Neovim (custom config)</span></div>
+                    <div class="kv"><span class="kv-k">BAR</span><span class="kv-v">Polybar</span></div>
+                    <div class="kv"><span class="kv-k">PKG MGR</span><span class="kv-v">Pacman + AUR</span></div>
+                    <div class="kv"><span class="kv-k">VCS</span><span class="kv-v">Git</span></div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-title">TRAINING PLATFORMS</div>
+                <div class="platform-list">
+                    <div class="platform-item">
+                        <div class="plat-top">
+                            <span class="plat-name">HackTheBox (HTB)</span>
+                            <span class="badge dormant">DORMANT</span>
+                        </div>
+                        <p>2 machines pwned. Ongoing pen-testing lab practice. Initializing fully @ Apr 2026.</p>
+                    </div>
+                    <div class="platform-item">
+                        <div class="plat-top">
+                            <span class="plat-name">Local Exploit Labs</span>
+                            <span class="badge deployed">DEPLOYED</span>
+                        </div>
+                        <p>DVWA in Docker, Metasploitable2 in QEMU. Custom isolated vulnerability research environments.</p>
+                    </div>
+                    <div class="platform-item">
+                        <div class="plat-top">
+                            <span class="plat-name">CTF Competition</span>
+                            <span class="badge none">NONE</span>
+                        </div>
+                        <p>Awaiting fundamentals mastery before CTF engagement. Internals first.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel mt">
+            <div class="panel-title"><i class="fas fa-message"></i> SYSTEM LOG</div>
+            <div class="terminal" id="syslog">
+                <div class="tline info">[BOOT] System node initialized · [rudv-ar] COMMAND CENTER ONLINE</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── COMMS ────────────────────────────────────────── -->
+    <section class="section" id="contact">
+        <div class="section-hdr">
+            <div class="section-hdr-line"></div>
+            <div class="section-hdr-text"><i class="fas fa-key"></i> SECURE COMMS</div>
+            <div class="section-hdr-line"></div>
+        </div>
+
+        <div class="comms-grid">
+            <a href="mailto:rdbhvr.archlinux.2026@gmail.com" class="comms-card">
+                <div class="comms-icon"><i class="fas fa-envelope"></i></div>
+                <div class="comms-label">EMAIL</div>
+                <div class="comms-val">rdbhvr.archlinux.2026@gmail.com</div>
+                <div class="comms-cta">INITIATE <i class="fas fa-arrow-right"></i></div>
+            </a>
+            <a href="https://github.com/rudv-ar" target="_blank" class="comms-card">
+                <div class="comms-icon"><i class="fab fa-github"></i></div>
+                <div class="comms-label">GITHUB</div>
+                <div class="comms-val">github.com/rudv-ar</div>
+                <div class="comms-cta">FOLLOW <i class="fas fa-arrow-right"></i></div>
+            </a>
+            <div class="comms-card passive">
+                <div class="comms-icon"><i class="fas fa-location-dot"></i></div>
+                <div class="comms-label">PHYSICAL NODE</div>
+                <div class="comms-val">The Greater Himalayas, India</div>
+                <div class="comms-cta"><span class="pulse-dot sm"></span> ACTIVE</div>
+            </div>
+        </div>
+
+        <div class="panel mt">
+            <div class="panel-title">PROTOCOL PREFERENCES</div>
+            <div class="proto-grid">
+                <div class="proto-item">
+                    <i class="fas fa-lock"></i>
+                    <span>Encrypted communication preferred — Proton Mail, Gmail, DNMX</span>
+                </div>
+                <div class="proto-item">
+                    <i class="fas fa-code"></i>
+                    <span>Detailed technical inquiries always welcome</span>
+                </div>
+                <div class="proto-item">
+                    <i class="fas fa-handshake"></i>
+                    <span>Collaboration: cybersecurity, systems admin, open-source</span>
+                </div>
+                <div class="proto-item">
+                    <i class="fas fa-book"></i>
+                    <span>Learning resources accelerate FOSS development and deployment timelines</span>
+                </div>
+                <div class="proto-item">
+                    <i class="fas fa-puzzle-piece"></i>
+                    <span>Open-source contributions and LFX partnership opportunities</span>
+                </div>
+                <div class="proto-item">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <span>System architecture discussions and technical mentorship</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel mt warning-panel">
+            <div class="panel-title"><i class="fas fa-triangle-exclamation"></i> OPERATIONAL NOTES</div>
+            <p>This operator prioritizes technical depth and system mastery. Conversations must be detailed, specific, and architectural. Expect deliberate execution. Short-cuts and blind tool usage are rejected in favor of understanding-first methodology.</p>
+        </div>
+    </section>
+
+    <footer class="footer">
+        COMMAND CENTER OPERATIONAL · [rudv-ar] DORMANT UNTIL APR 2026 · ALL ACTIONS UNLOGGED
+    </footer>
+
+</main>
+
+<script src="src/js/script.js"></script>
+</body>
+</html>
+
