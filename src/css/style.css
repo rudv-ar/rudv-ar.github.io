@@ -324,7 +324,6 @@ body {
 .hex-ring {
     position: relative;
     width: 200px; height: 200px;
-    margin: 10px;
 }
 .hex-ring::before, .hex-ring::after {
     content: '';
