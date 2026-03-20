@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C Dev Environment · Arch Linux</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;800&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --panel: #131720;
+    --border: #1e2535;
+    --accent: #00e5ff;
+    --green: #00ff88;
+    --orange: #ff6b35;
+    --purple: #bd93f9;
+    --dim: #4a5568;
+    --text: #cdd6f4;
+    --muted: #6b7a99;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Scanline overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  .hero {
+    padding: 60px 40px 40px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(0,229,255,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .tag {
+    display: inline-block;
+    background: rgba(0,229,255,0.1);
+    border: 1px solid rgba(0,229,255,0.3);
+    color: var(--accent);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    padding: 4px 12px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 8vw, 96px);
+    letter-spacing: 0.04em;
+    line-height: 0.9;
+    color: #fff;
+  }
+
+  h1 span { color: var(--accent); }
+
+  .subtitle {
+    margin-top: 16px;
+    color: var(--muted);
+    font-size: 13px;
+    letter-spacing: 0.05em;
+  }
+
+  /* Tab navigation */
+  .tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tab {
+    padding: 14px 22px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: none;
+    background: none;
+    color: var(--dim);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .content { padding: 40px; max-width: 960px; }
+
+  .section { display: none; }
+  .section.active { display: block; animation: fadeIn 0.25s ease; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* Step blocks */
+  .step {
+    margin-bottom: 32px;
+    border-left: 2px solid var(--border);
+    padding-left: 24px;
+    position: relative;
+  }
+  .step::before {
+    content: attr(data-n);
+    position: absolute;
+    left: -14px;
+    top: 0;
+    width: 26px; height: 26px;
+    background: var(--bg);
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+  }
+
+  .step h3 {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+
+  .step p {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 10px;
+  }
+
+  /* Terminal blocks */
+  .term {
+    background: #080a0f;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 10px 0;
+    position: relative;
+  }
+
+  .term-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 14px;
+    background: #0e1018;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .term-dots { display: flex; gap: 6px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot.r { background: #ff5f57; }
+  .dot.y { background: #febc2e; }
+  .dot.g { background: #28c840; }
+
+  .term-label { font-size: 11px; color: var(--dim); letter-spacing: 0.1em; }
+
+  .copy-btn {
+    background: none;
+    border: 1px solid var(--dim);
+    color: var(--dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 3px 10px;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: all 0.2s;
+  }
+  .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .copy-btn.copied { border-color: var(--green); color: var(--green); }
+
+  .term-body { padding: 16px; overflow-x: auto; }
+
+  .term-body pre {
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--text);
+    white-space: pre;
+  }
+
+  .p { color: var(--green); } /* prompt */
+  .cmd { color: #fff; font-weight: 600; }
+  .arg { color: var(--accent); }
+  .cmt { color: var(--dim); font-style: italic; }
+  .out { color: var(--muted); }
+  .key { color: var(--orange); }
+  .val { color: var(--purple); }
+  .str { color: #f1fa8c; }
+
+  /* Info cards */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 20px;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--accent); }
+
+  .card-icon { font-size: 22px; margin-bottom: 10px; }
+  .card h4 { font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+  .card p { font-size: 11px; color: var(--muted); line-height: 1.6; }
+  .card .badge {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 10px;
+    padding: 2px 8px;
+    background: rgba(0,229,255,0.08);
+    color: var(--accent);
+    border: 1px solid rgba(0,229,255,0.2);
+    letter-spacing: 0.1em;
+  }
+
+  /* Key table */
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+  th { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--dim); padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+  td { font-size: 12px; padding: 10px 12px; border-bottom: 1px solid rgba(30,37,53,0.6); vertical-align: top; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .kbd {
+    display: inline-block;
+    background: #1a1f2e;
+    border: 1px solid var(--border);
+    border-bottom-width: 2px;
+    padding: 1px 7px;
+    font-size: 11px;
+    color: var(--accent);
+    border-radius: 3px;
+  }
+
+  .highlight { color: var(--orange); font-weight: 600; }
+  .note {
+    background: rgba(0,229,255,0.05);
+    border-left: 3px solid var(--accent);
+    padding: 12px 16px;
+    font-size: 12px;
+    color: var(--muted);
+    margin: 12px 0;
+    line-height: 1.6;
+  }
+  .note strong { color: var(--accent); }
+
+  /* Progress bar */
+  .progress-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  .progress-track {
+    height: 3px;
+    background: var(--border);
+    flex: 1;
+    margin-left: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--green));
+    transition: width 0.5s ease;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: #fff;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+  }
+  .section-desc {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 32px;
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 600px) {
+    .hero, .content { padding: 30px 20px; }
+    .tabs { padding: 0 20px; }
+    h1 { font-size: 52px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="tag">⚙ Arch Linux · C Development</div>
+  <h1>C DEV<br><span>ENVIRONMENT</span></h1>
+  <p class="subtitle">// terminal-first · progressive · powerful · yours</p>
+</div>
+
+<nav class="tabs">
+  <button class="tab active" onclick="show('install', this)">01 · Install</button>
+  <button class="tab" onclick="show('editor', this)">02 · Editor</button>
+  <button class="tab" onclick="show('debug', this)">03 · Debug</button>
+  <button class="tab" onclick="show('build', this)">04 · Build</button>
+  <button class="tab" onclick="show('workflow', this)">05 · Workflow</button>
+  <button class="tab" onclick="show('learn', this)">06 · Learn</button>
+</nav>
+
+<div class="content">
+
+  <!-- INSTALL -->
+  <div class="section active" id="install">
+    <div class="section-title">Core Toolchain</div>
+    <p class="section-desc">Everything you need from the Arch repos — compiler, debugger, build tools.</p>
+
+    <div class="step" data-n="1">
+      <h3>Update System</h3>
+      <p>Always sync before installing anything on Arch.</p>
+      <div class="term">
+        <div class="term-bar">
+          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <span class="term-label">bash</span>
+          <button class="copy-btn" onclick="copyCode(this, 'sudo pacman -Syu')">copy</button>
+        </div>
+        <div class="term-body"><pre><span class="p">$</span> <span class="cmd">sudo pacman</span> <span class="arg">-Syu</span></pre></div>
+      </div>
+    </div>
+
+    <div class="step" data-n="2">
+      <h3>Install Base Development Tools</h3>
+      <p>The <span class="highlight">base-devel</span> group includes gcc, make, and essential build utilities.</p>
+      <div class="term">
+        <div class="term-bar">
+          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <span class="term-label">bash</span>
+          <button class="copy-btn" onclick="copyCode(this, 'sudo pacman -S base-devel gcc gdb clang lldb cmake ninja valgrind')">copy</button>
+        </div>
+        <div class="term-body"><pre><span class="p">$</span> <span class="cmd">sudo pacman</span> <span class="arg">-S</span> <span class="val">base-devel gcc gdb clang lldb cmake ninja valgrind</span></pre></div>
+      </div>
+    </div>
+
+    <div class="step" data-n="3">
+      <h3>Verify Installation</h3>
+      <div class="term">
+        <div class="term-bar">
+          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <span class="term-label">bash</span>
+          <button class="copy-btn" onclick="copyCode(this, 'gcc --version && gdb --version && make --version')">copy</button>
+        </div>
+        <div class="term-body"><pre><span class="p">$</span> <span class="cmd">gcc</span> <span class="arg">--version</span>
+<span class="out">gcc (GCC) 14.x.x ...</span>
+<span class="p">$</span> <span class="cmd">gdb</span> <span class="arg">--version</span>
+<span class="out">GNU gdb (GDB) 15.x ...</span></pre></div>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <h4>gcc</h4>
+        <p>GNU C Compiler. Industry standard, excellent diagnostics, broad platform support.</p>
+        <span class="badge">primary compiler</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔬</div>
+        <h4>clang</h4>
+        <p>LLVM frontend. Friendlier error messages, static analysis, compatible with gcc flags.</p>
+        <span class="badge">alternative / analysis</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🐛</div>
+        <h4>gdb</h4>
+        <p>GNU Debugger. Set breakpoints, inspect memory, step through code line by line.</p>
+        <span class="badge">debugger</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔩</div>
+        <h4>valgrind</h4>
+        <p>Memory error detector. Find leaks, invalid reads/writes, uninitialized values.</p>
+        <span class="badge">memory safety</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDITOR -->
+  <div class="section" id="editor">
+    <div class="section-title">Editor Setup</div>
+    <p class="section-desc">Neovim with LSP — autocomplete, go-to-definition, inline errors, all in the terminal.</p>
+
+    <div class="step" data-n="1">
+      <h3>Install Neovim + Dependencies</h3>
+      <div class="term">
+        <div class="term-bar">
+          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <span class="term-label">bash</span>
+          <button class="copy-btn" onclick="copyCode(this, 'sudo pacman -S neovim ripgrep fd nodejs npm python python-pip')">copy</button>
+        </div>
+        <div class="term-body"><pre><span class="p">$</span> <span class="cmd">sudo pacman</span> <span class="arg">-S</span> <span class="val">neovim ripgrep fd nodejs npm python python-pip</span></pre></div>
+      </div>
+    </div>
+
+    <div class="step" data-n="2">
+      <h3>Install clangd (C Language Server)</h3>
+      <p>clangd gives you IDE features: autocomplete, hover docs, go-to-definition, inline diagnostics.</p>
+      <div class="term">
+        <div class="term-bar">
+          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <span class="term-label">bash</span>
+          <button class="copy-btn" onclick="copyCode(this, 'sudo pacman -S clang')">copy</button>
+        </div>
+        <div class="term-body"><pre><span class="p">$</span> <span class="cmd">sudo pacman</span> <span class="arg">-S</span> <span class="val">clang</span>  <span class="cmt"># ships clangd</span>
+<span class="p">$</span> <span class="cmd">clangd</span> <span class="arg">--version</span></pre></div>
+      </div>
+    </div>
+
+    <div class="step" data-n="3">
+      <h3>Bootstrap Neovim with LazyVim (recommended)</h3>
+      <p>LazyVim is a modern Neovim config that works out of the box. Enables C/LSP with one extra.</p>
+      <div class="term">
+        <div class="term-bar">
+          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <span class="term-label">bash</span>
+          <button class="copy-btn" onclick="copyCode(this, 'git clone https://github.com/LazyVim/starter ~/.config/nvim')">copy</button>
+        </div>
+        <div class="term-body"><pre><span class="p">$</span> <span class="cmd">git clone</span> https://github.com/LazyVim/starter <span class="val">~/.config/nvim</span>
+<span class="p">$</span> <span class="cmd">rm</span> <span class="arg">-rf</span> ~/.config/nvim/.git
+<span class="p">$</span> <span class="cmd">nvim</span>  <span class="cmt"># plugins auto-install on first launch</span></pre></div>
+      </div>
+    </div>
+
+    <div class="step" data-n="4">
+      <h3>Enable C Language Support</h3>
+      <p>Add this file to your LazyVim extras:</p>
+      <div class="term">
+        <div class="term-bar">
+          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <span class="term-label">~/.config/nvim/lua/config/lazy.lua</span>
+          <button class="copy-btn" onclick="copyCode(this, '{ import = \"lazyvim.plugins.extras.lang.clangd\" }')">copy</button>
+        </div>
+        <div class="term-body"><pre><span class="cmt">-- add inside the extras = {} table:</span>
+<span class="p"></span>{ <span class="key">import</span> = <span class="str">"lazyvim.plugins.extras.lang.clangd"</span> }</pre></div>
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>compile_commands.json</strong> — clangd needs this to understand your project. CMake generates it automatically (<code>-DCMAKE_EXPORT_COMPILE_COMMANDS=ON</code>), or use <code>bear -- make</code> for Makefile projects.
+    </div>
+
+    <div class="step" data-n="5">
+      <h3>Key Neovim Shortcuts for C Dev</h3>
+      <table>
+        <tr><th>Key</th><th>Action</th></tr>
+        <tr><td><span class="kbd">gd</span></td><td>Go to definition</td></tr>
+        <tr><td><span class="kbd">gr</span></td><td>Find all references</td></tr>
+        <tr><td><span class="kbd">K</span></td><td>Hover documentation</td></tr>
+        <tr><td><span class="kbd">&lt;leader&gt;ca</span></td><td>Code action (fix, refactor)</td></tr>
+        <tr><td><span class="kbd">&lt;leader&gt;cr</span></td><td>Rename symbol</td></tr>
+        <tr><td><span class="kbd">]d</span> / <span class="kbd">[d</span></td><td>Next / prev diagnostic</td></tr>
+        <tr><td><span class="kbd">&lt;leader&gt;/</span></td><td>Live grep (ripgrep)</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- DEBUG -->
+  <div class="section" id="debug">
+    <div class="section-title">Debugging</div>
+    <p class="section-desc">GDB essentials + memory checking with Valgrind.</p>
+
+    <div class="step" data-n="1">
+      <h3>Compile with Debug Symbols</h3>
+      <p>Always use <span class="highlight">-g</span> (and disable optimizations with <span class="highlight">-O0</span>) when debugging.</p>
+      <div class="term">
+        <div class="term-bar">
+          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <span class="term-label">bash</span>
+          <button class="copy-btn" onclick="copyCode(this, 'gcc -g -O0 -Wall -Wextra -o myprog myprog.c')">copy</button>
+        </div>
+        <div class="term-body"><pre><span class="p">$</span> <span class="cmd">gcc</span> <span class="arg">-g -O0 -Wall -Wextra</span> <span class="arg">-o</span> myprog myprog.c</pre></div>
+      </div>
+    </div>
+
+    <div class="step" data-n="2">
+      <h3>GDB Quick Session</h3>
+      <div class="term">
+        <div class="term-bar">
+          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <span class="term-label">gdb session</span>
+          <button class="copy-btn" onclick="copyCode(this, 'gdb ./myprog')">copy</button>
+        </div>
+        <div class="term-body"><pre><span class="p">$</span> <span class="cmd">gdb</span> ./myprog
+<span class="out">(gdb)</span> <span class="cmd">break</span> <span class="val">main</span>         <span class="cmt"># breakpoint at main</span>
+<span class="out">(gdb)</span> <span class="cmd">run</span>                <span class="cmt"># start program</span>
+<span class="out">(gdb)</span> <span class="cmd">next</span>               <span class="cmt"># step over (n)</span>
+<span class="out">(gdb)</span> <span class="cmd">step</span>               <span class="cmt"># step into (s)</span>
+<span class="out">(gdb)</span> <span class="cmd">print</span> <span class="val">my_var</span>       <span class="cmt"># inspect variable</span>
+<span class="out">(gdb)</span> <span class="cmd">backtrace</span>          <span class="cmt"># show call stack (bt)</span>
+<span class="out">(gdb)</span> <span class="cmd">continue</span>           <span class="cmt"># resume (c)</span>
+<span class="out">(gdb)</span> <span class="cmd">quit</span>               <span class="cmt"># exit</span></pre></div>
+      </div>
+    </div>
+
+    <div class="step" data-n="3">
+      <h3>Valgrind — Memory Leak Detection</h3>
+      <div class="term">
+        <div class="term-bar">
+          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <span class="term-label">bash</span>
+          <button class="copy-btn" onclick="copyCode(this, 'valgrind --leak-check=full --show-leak-kinds=all ./myprog')">copy</button>
+        </div>
+        <div class="term-body"><pre><span class="p">$</span> <span class="cmd">valgrind</span> <span class="arg">--leak-check=full --show-leak-kinds=all</span> ./myprog
+<span class="out">==1234== HEAP SUMMARY:
+==1234==   in use at exit: 0 bytes in 0 blocks
+==1234==   total heap usage: 3 allocs, 3 frees
+==1234== All heap blocks were freed -- no leaks are possible ✓</span></pre></div>
+      </div>
+    </div>
+
+    <div class="step" data-n="4">
+      <h3>AddressSanitizer (faster than Valgrind)</h3>
+      <p>Compile-time instrumentation for catching memory bugs at runtime — no separate tool needed.</p>
+      <div class="term">
+        <div class="term-bar">
+          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <span class="term-label">bash</span>
+          <button class="copy-btn" onclick="copyCode(this, 'gcc -g -fsanitize=address,undefined -o myprog myprog.c')">copy</button>
+        </div>
+        <div class="term-body"><pre><span class="p">$</span> <span class="cmd">gcc</span> <span class="arg">-g -fsanitize=address,undefined</span> <span class="arg">-o</span> myprog myprog.c
+<span class="p">$</span> <span class="cmd">./myprog</span>   <span class="cmt"># ASAN output on violations</span></pre></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUILD -->
+  <div class="section" id="build">
+    <div class="section-title">Build Systems</div>
+    <p class="section-desc">From a single Makefile to full CMake projects.</p>
+
+    <div class="step" data-n="1">
+      <h3>The Essential Makefile</h3>
+      <p>For small-to-medium projects, a well-structured Makefile is all you need.</p>
+      <div class="term">
+        <div class="term-bar">
+          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <span class="term-label">Makefile</span>
+          <button class="copy-btn" onclick="copyCode(this, 'Makefile content')">copy</button>
+        </div>
+        <div class="term-body"><pre><span class="key">CC</span>      = gcc
+<span class="key">CFLAGS</span>  = <span class="str">-Wall -Wextra -Wpedantic -std=c11 -O2</span>
+<span class="key">DBGFLAGS</span>= <span class="str">-g -O0 -fsanitize=address,undefined</span>
+<span class="key">SRC</span>     = $(wildcard src/*.c)
+<span class="key">OBJ</span>     = $(SRC:.c=.o)
+<span class="key">TARGET</span>  = myprog
+
+<span class="val">all</span>: $(TARGET)
+
+<span class="val">$(TARGET)</span>: $(OBJ)
+    $(CC) $(CFLAGS) <span class="arg">-o</span> $@ $^
+
+<span class="val">debug</span>: CFLAGS = $(DBGFLAGS)
+<span class="val">debug</span>: $(TARGET)
+
+<span class="val">clean</span>:
+    rm -f $(OBJ) $(TARGET)
+
+<span class="val">.PHONY</span>: all debug clean</pre></div>
+      </div>
+    </div>
+
+    <div class="step" data-n="2">
+      <h3>CMake Project Structure</h3>
+      <p>For larger projects with dependencies, CMake + Ninja is the modern standard.</p>
+      <div class="term">
+        <div class="term-bar">
+          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <span class="term-label">CMakeLists.txt</span>
+          <button class="copy-btn" onclick="copyCode(this, 'cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug')">copy</button>
+        </div>
+        <div class="term-body"><pre><span class="key">cmake_minimum_required</span>(VERSION 3.20)
+<span class="key">project</span>(MyProject C)
+<span class="key">set</span>(CMAKE_C_STANDARD <span class="val">11</span>)
+<span class="key">set</span>(CMAKE_EXPORT_COMPILE_COMMANDS <span class="val">ON</span>)  <span class="cmt"># for clangd!</span>
+
+<span class="key">add_executable</span>(myprog src/main.c src/utils.c)
+<span class="key">target_compile_options</span>(myprog PRIVATE
+    <span class="str">-Wall -Wextra -Wpedantic</span>)</pre></div>
+      </div>
+      <div class="term">
+        <div class="term-bar">
+          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <span class="term-label">bash · build commands</span>
+          <button class="copy-btn" onclick="copyCode(this, 'cmake -B build -G Ninja && cmake --build build')">copy</button>
+        </div>
+        <div class="term-body"><pre><span class="p">$</span> <span class="cmd">cmake</span> <span class="arg">-B build -G Ninja -DCMAKE_BUILD_TYPE=Debug</span>
+<span class="p">$</span> <span class="cmd">cmake</span> <span class="arg">--build build</span>       <span class="cmt"># or: ninja -C build</span>
+<span class="p">$</span> <span class="cmt"># symlink compile_commands for clangd:</span>
+<span class="p">$</span> <span class="cmd">ln</span> <span class="arg">-s</span> build/compile_commands.json .</pre></div>
+      </div>
+    </div>
+
+    <div class="step" data-n="3">
+      <h3>Recommended Compiler Flags</h3>
+      <table>
+        <tr><th>Flag</th><th>Purpose</th></tr>
+        <tr><td><span class="kbd">-Wall -Wextra</span></td><td>Enable most useful warnings</td></tr>
+        <tr><td><span class="kbd">-Wpedantic</span></td><td>Strict ISO C conformance</td></tr>
+        <tr><td><span class="kbd">-std=c11</span></td><td>Use C11 standard</td></tr>
+        <tr><td><span class="kbd">-O2</span></td><td>Optimized release build</td></tr>
+        <tr><td><span class="kbd">-g</span></td><td>Include debug symbols</td></tr>
+        <tr><td><span class="kbd">-fsanitize=address</span></td><td>AddressSanitizer (ASAN)</td></tr>
+        <tr><td><span class="kbd">-fsanitize=undefined</span></td><td>Undefined Behavior Sanitizer</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- WORKFLOW -->
+  <div class="section" id="workflow">
+    <div class="section-title">Daily Workflow</div>
+    <p class="section-desc">Terminal multiplexer, version control, and productivity tools.</p>
+
+    <div class="step" data-n="1">
+      <h3>tmux — Split Terminal Sessions</h3>
+      <p>Run editor, build output, and a REPL all at once without leaving the terminal.</p>
+      <div class="term">
+        <div class="term-bar">
+          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <span class="term-label">bash</span>
+          <button class="copy-btn" onclick="copyCode(this, 'sudo pacman -S tmux')">copy</button>
+        </div>
+        <div class="term-body"><pre><span class="p">$</span> <span class="cmd">sudo pacman</span> <span class="arg">-S</span> <span class="val">tmux</span></pre></div>
+      </div>
+      <table>
+        <tr><th>Key</th><th>Action</th></tr>
+        <tr><td><span class="kbd">Ctrl+b %</span></td><td>Vertical split</td></tr>
+        <tr><td><span class="kbd">Ctrl+b "</span></td><td>Horizontal split</td></tr>
+        <tr><td><span class="kbd">Ctrl+b arrow</span></td><td>Move between panes</td></tr>
+        <tr><td><span class="kbd">Ctrl+b c</span></td><td>New window</td></tr>
+        <tr><td><span class="kbd">Ctrl+b d</span></td><td>Detach session</td></tr>
+      </table>
+    </div>
+
+    <div class="step" data-n="2">
+      <h3>git — Version Control</h3>
+      <div class="term">
+        <div class="term-bar">
+          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <span class="term-label">bash</span>
+          <button class="copy-btn" onclick="copyCode(this, 'sudo pacman -S git && git config --global core.editor nvim')">copy</button>
+        </div>
+        <div class="term-body"><pre><span class="p">$</span> <span class="cmd">sudo pacman</span> <span class="arg">-S</span> <span class="val">git</span>
+<span class="p">$</span> <span class="cmd">git config</span> <span class="arg">--global</span> user.name  <span class="str">"Your Name"</span>
+<span class="p">$</span> <span class="cmd">git config</span> <span class="arg">--global</span> user.email <span class="str">"you@email.com"</span>
+<span class="p">$</span> <span class="cmd">git config</span> <span class="arg">--global</span> core.editor <span class="str">nvim</span></pre></div>
+      </div>
+    </div>
+
+    <div class="step" data-n="3">
+      <h3>ctags / cscope — Code Navigation</h3>
+      <p>Jump between functions across files without an LSP.</p>
+      <div class="term">
+        <div class="term-bar">
+          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <span class="term-label">bash</span>
+          <button class="copy-btn" onclick="copyCode(this, 'sudo pacman -S ctags && ctags -R .')">copy</button>
+        </div>
+        <div class="term-body"><pre><span class="p">$</span> <span class="cmd">sudo pacman</span> <span class="arg">-S</span> <span class="val">ctags</span>
+<span class="p">$</span> <span class="cmd">ctags</span> <span class="arg">-R</span> .    <span class="cmt"># run from project root</span></pre></div>
+      </div>
+    </div>
+
+    <div class="step" data-n="4">
+      <h3>Handy .bashrc Aliases</h3>
+      <div class="term">
+        <div class="term-bar">
+          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <span class="term-label">~/.bashrc</span>
+          <button class="copy-btn" onclick="copyCode(this, 'alias cc=\'gcc -Wall -Wextra -std=c11\'')">copy</button>
+        </div>
+        <div class="term-body"><pre><span class="cmt"># Quick compile alias</span>
+<span class="key">alias</span> <span class="val">cc</span>=<span class="str">'gcc -Wall -Wextra -std=c11'</span>
+<span class="key">alias</span> <span class="val">ccd</span>=<span class="str">'gcc -g -O0 -fsanitize=address,undefined'</span>
+
+<span class="cmt"># One-liner: compile & run</span>
+<span class="key">function</span> <span class="val">crun</span>() {
+  gcc <span class="arg">-Wall -Wextra -std=c11 -o /tmp/crun</span> "$1" && /tmp/crun
+}</pre></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEARN -->
+  <div class="section" id="learn">
+    <div class="section-title">Learning Path</div>
+    <p class="section-desc">A progressive roadmap from beginner to systems programmer.</p>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">🌱</div>
+        <h4>Phase 1 · Foundations</h4>
+        <p>Types, control flow, functions, arrays, pointers, strings, basic I/O. Write programs, compile them, break them.</p>
+        <span class="badge">weeks 1–4</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔧</div>
+        <h4>Phase 2 · Memory</h4>
+        <p>Stack vs heap, malloc/free, pointer arithmetic, structs, unions, function pointers.</p>
+        <span class="badge">weeks 5–8</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">📦</div>
+        <h4>Phase 3 · Systems</h4>
+        <p>File I/O, processes (fork/exec), signals, sockets, POSIX APIs. The Linux kernel is your playground.</p>
+        <span class="badge">weeks 9–16</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🚀</div>
+        <h4>Phase 4 · Projects</h4>
+        <p>Build a shell, a HTTP server, a malloc replacement, a text editor. Ship real code.</p>
+        <span class="badge">ongoing</span>
+      </div>
+    </div>
+
+    <div class="step" data-n="1" style="margin-top:32px">
+      <h3>Essential Resources</h3>
+      <table>
+        <tr><th>Resource</th><th>Why</th></tr>
+        <tr><td><span class="highlight">K&R — The C Programming Language</span></td><td>The bible. Read it cover to cover.</td></tr>
+        <tr><td><span class="highlight">CS:APP (Bryant & O'Hallaron)</span></td><td>C + systems programming + how computers work</td></tr>
+        <tr><td><span class="highlight">man pages</span></td><td><code>man 3 printf</code>, <code>man 2 open</code> — always within reach</td></tr>
+        <tr><td><span class="highlight">godbolt.org</span></td><td>See your C code as assembly live</td></tr>
+        <tr><td><span class="highlight">cdecl.org</span></td><td>Decode complex C declarations in plain English</td></tr>
+      </table>
+    </div>
+
+    <div class="step" data-n="2">
+      <h3>Your First C Program on Arch</h3>
+      <div class="term">
+        <div class="term-bar">
+          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+          <span class="term-label">hello.c → compile → run</span>
+          <button class="copy-btn" onclick="copyCode(this, 'nvim hello.c')">copy</button>
+        </div>
+        <div class="term-body"><pre><span class="p">$</span> <span class="cmd">nvim</span> hello.c
+
+<span class="cmt">// hello.c</span>
+<span class="key">#include</span> <span class="str">&lt;stdio.h&gt;</span>
+<span class="key">int</span> <span class="val">main</span>(<span class="key">void</span>) {
+    printf(<span class="str">"arch + c = 🔥\n"</span>);
+    <span class="key">return</span> <span class="val">0</span>;
+}
+
+<span class="p">$</span> <span class="cmd">gcc</span> <span class="arg">-Wall -Wextra -std=c11 -o</span> hello hello.c
+<span class="p">$</span> <span class="cmd">./hello</span>
+<span class="out">arch + c = 🔥</span></pre></div>
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>Pro tip:</strong> Use <code>man 3 &lt;function&gt;</code> for C library functions and <code>man 2 &lt;syscall&gt;</code> for Linux syscalls. Install <code>man-pages</code> if needed: <code>sudo pacman -S man-pages</code>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function show(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function copyCode(btn, text) {
+  // grab the nearest pre element's text content
+  const pre = btn.closest('.term').querySelector('pre');
+  // extract just command text (strip spans)
+  const raw = pre ? pre.innerText.replace(/^\$\s*/gm, '').trim() : text;
+  navigator.clipboard.writeText(raw).then(() => {
+    btn.textContent = 'copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 1800);
+  });
+}
+</script>
+</body>
+</html>
+
