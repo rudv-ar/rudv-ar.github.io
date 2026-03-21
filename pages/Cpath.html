@@ -7,16 +7,16 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;800&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0d0f14;
-    --panel: #131720;
+    --bg:     #0d0f14;
+    --panel:  #131720;
     --border: #1e2535;
     --accent: #00e5ff;
-    --green: #00ff88;
+    --green:  #00ff88;
     --orange: #ff6b35;
     --purple: #bd93f9;
-    --dim: #4a5568;
-    --text: #cdd6f4;
-    --muted: #6b7a99;
+    --dim:    #4a5568;
+    --text:   #cdd6f4;
+    --muted:  #6b7a99;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -29,7 +29,6 @@
     overflow-x: hidden;
   }
 
-  /* Scanline overlay */
   body::before {
     content: '';
     position: fixed;
@@ -39,22 +38,28 @@
     z-index: 100;
   }
 
+  /* ── HERO ── */
   .hero {
     padding: 60px 40px 40px;
     border-bottom: 1px solid var(--border);
     position: relative;
     overflow: hidden;
   }
-
   .hero::after {
     content: '';
     position: absolute;
     top: -80px; right: -80px;
-    width: 400px; height: 400px;
+    width: 500px; height: 500px;
     background: radial-gradient(circle, rgba(0,229,255,0.06) 0%, transparent 70%);
     pointer-events: none;
   }
-
+  .hero-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
   .tag {
     display: inline-block;
     background: rgba(0,229,255,0.1);
@@ -66,7 +71,6 @@
     margin-bottom: 20px;
     text-transform: uppercase;
   }
-
   h1 {
     font-family: 'Bebas Neue', sans-serif;
     font-size: clamp(52px, 8vw, 96px);
@@ -74,31 +78,56 @@
     line-height: 0.9;
     color: #fff;
   }
-
   h1 span { color: var(--accent); }
+  .subtitle { margin-top: 16px; color: var(--muted); font-size: 13px; letter-spacing: 0.05em; }
 
-  .subtitle {
-    margin-top: 16px;
-    color: var(--muted);
-    font-size: 13px;
-    letter-spacing: 0.05em;
+  .phase1-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,255,136,0.08);
+    border: 1px solid rgba(0,255,136,0.3);
+    color: var(--green);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    padding: 8px 16px;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    white-space: nowrap;
+    align-self: flex-start;
+    margin-top: 4px;
   }
+  .phase1-link:hover { background: rgba(0,255,136,0.14); border-color: var(--green); }
+  .phase1-link::after { content: '→'; }
 
-  /* Tab navigation */
+  /* overall progress in hero */
+  .hero-progress {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .hero-progress-label { font-size: 11px; color: var(--dim); letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap; }
+  .hero-progress-track { flex: 1; height: 3px; background: var(--border); overflow: hidden; }
+  .hero-progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--green)); transition: width 0.6s ease; width: 0%; }
+  .hero-progress-pct { font-size: 12px; color: var(--accent); font-weight: 600; white-space: nowrap; }
+
+  /* ── TABS ── */
   .tabs {
     display: flex;
-    gap: 0;
     border-bottom: 1px solid var(--border);
     padding: 0 40px;
     overflow-x: auto;
     scrollbar-width: none;
   }
   .tabs::-webkit-scrollbar { display: none; }
-
   .tab {
-    padding: 14px 22px;
+    padding: 14px 20px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -111,17 +140,25 @@
     transition: all 0.2s;
     white-space: nowrap;
   }
-  .tab:hover { color: var(--text); }
+  .tab:hover  { color: var(--text); }
   .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
 
+  /* ── CONTENT ── */
   .content { padding: 40px; max-width: 960px; }
-
   .section { display: none; }
   .section.active { display: block; animation: fadeIn 0.25s ease; }
-
   @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-  /* Step blocks */
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: #fff;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+  }
+  .section-desc { font-size: 12px; color: var(--muted); margin-bottom: 32px; letter-spacing: 0.04em; line-height: 1.7; }
+
+  /* ── STEP BLOCKS ── */
   .step {
     margin-bottom: 32px;
     border-left: 2px solid var(--border);
@@ -131,8 +168,7 @@
   .step::before {
     content: attr(data-n);
     position: absolute;
-    left: -14px;
-    top: 0;
+    left: -14px; top: 0;
     width: 26px; height: 26px;
     background: var(--bg);
     border: 2px solid var(--accent);
@@ -142,74 +178,38 @@
     display: flex; align-items: center; justify-content: center;
     border-radius: 50%;
   }
+  .step h3 { font-size: 13px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #fff; margin-bottom: 8px; }
+  .step p  { font-size: 12px; color: var(--muted); line-height: 1.75; margin-bottom: 10px; }
 
-  .step h3 {
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #fff;
-    margin-bottom: 8px;
-  }
-
-  .step p {
-    font-size: 12px;
-    color: var(--muted);
-    line-height: 1.7;
-    margin-bottom: 10px;
-  }
-
-  /* Terminal blocks */
+  /* ── TERMINAL ── */
   .term {
     background: #080a0f;
     border: 1px solid var(--border);
     border-radius: 4px;
     overflow: hidden;
     margin: 10px 0;
-    position: relative;
   }
-
   .term-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    display: flex; align-items: center; justify-content: space-between;
     padding: 8px 14px;
     background: #0e1018;
     border-bottom: 1px solid var(--border);
   }
-
   .term-dots { display: flex; gap: 6px; }
   .dot { width: 10px; height: 10px; border-radius: 50%; }
-  .dot.r { background: #ff5f57; }
-  .dot.y { background: #febc2e; }
-  .dot.g { background: #28c840; }
-
+  .dot.r { background: #ff5f57; } .dot.y { background: #febc2e; } .dot.g { background: #28c840; }
   .term-label { font-size: 11px; color: var(--dim); letter-spacing: 0.1em; }
-
   .copy-btn {
-    background: none;
-    border: 1px solid var(--dim);
-    color: var(--dim);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    padding: 3px 10px;
-    cursor: pointer;
-    letter-spacing: 0.05em;
-    transition: all 0.2s;
+    background: none; border: 1px solid var(--dim); color: var(--dim);
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 3px 10px;
+    cursor: pointer; letter-spacing: 0.05em; transition: all 0.2s;
   }
-  .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .copy-btn.copied { border-color: var(--green); color: var(--green); }
-
+  .copy-btn:hover  { border-color: var(--accent); color: var(--accent); }
+  .copy-btn.copied { border-color: var(--green);  color: var(--green); }
   .term-body { padding: 16px; overflow-x: auto; }
+  .term-body pre { font-size: 13px; line-height: 1.8; color: var(--text); white-space: pre; }
 
-  .term-body pre {
-    font-size: 13px;
-    line-height: 1.8;
-    color: var(--text);
-    white-space: pre;
-  }
-
-  .p { color: var(--green); } /* prompt */
+  .p   { color: var(--green); }
   .cmd { color: #fff; font-weight: 600; }
   .arg { color: var(--accent); }
   .cmt { color: var(--dim); font-style: italic; }
@@ -218,597 +218,1070 @@
   .val { color: var(--purple); }
   .str { color: #f1fa8c; }
 
-  /* Info cards */
+  /* ── CARDS ── */
   .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 16px;
-    margin-top: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px; margin-top: 16px;
   }
-
-  .card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    padding: 20px;
-    transition: border-color 0.2s;
-  }
+  .card { background: var(--panel); border: 1px solid var(--border); padding: 20px; transition: border-color 0.2s; }
   .card:hover { border-color: var(--accent); }
-
   .card-icon { font-size: 22px; margin-bottom: 10px; }
   .card h4 { font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 6px; }
-  .card p { font-size: 11px; color: var(--muted); line-height: 1.6; }
-  .card .badge {
-    display: inline-block;
-    margin-top: 8px;
-    font-size: 10px;
-    padding: 2px 8px;
-    background: rgba(0,229,255,0.08);
-    color: var(--accent);
-    border: 1px solid rgba(0,229,255,0.2);
-    letter-spacing: 0.1em;
+  .card p { font-size: 11px; color: var(--muted); line-height: 1.65; }
+  .badge {
+    display: inline-block; margin-top: 8px; font-size: 10px; padding: 2px 8px;
+    background: rgba(0,229,255,0.08); color: var(--accent); border: 1px solid rgba(0,229,255,0.2); letter-spacing: 0.1em;
   }
 
-  /* Key table */
+  /* ── TABLES ── */
   table { width: 100%; border-collapse: collapse; margin-top: 12px; }
   th { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--dim); padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border); }
-  td { font-size: 12px; padding: 10px 12px; border-bottom: 1px solid rgba(30,37,53,0.6); vertical-align: top; }
+  td { font-size: 12px; padding: 10px 12px; border-bottom: 1px solid rgba(30,37,53,0.6); vertical-align: top; color: var(--muted); }
   tr:hover td { background: rgba(255,255,255,0.02); }
-  .kbd {
-    display: inline-block;
-    background: #1a1f2e;
-    border: 1px solid var(--border);
-    border-bottom-width: 2px;
-    padding: 1px 7px;
-    font-size: 11px;
-    color: var(--accent);
-    border-radius: 3px;
-  }
-
+  .kbd { display: inline-block; background: #1a1f2e; border: 1px solid var(--border); border-bottom-width: 2px; padding: 1px 7px; font-size: 11px; color: var(--accent); border-radius: 3px; }
   .highlight { color: var(--orange); font-weight: 600; }
-  .note {
-    background: rgba(0,229,255,0.05);
-    border-left: 3px solid var(--accent);
-    padding: 12px 16px;
-    font-size: 12px;
-    color: var(--muted);
-    margin: 12px 0;
-    line-height: 1.6;
-  }
+
+  /* ── NOTES ── */
+  .note { background: rgba(0,229,255,0.05); border-left: 3px solid var(--accent); padding: 12px 16px; font-size: 12px; color: var(--muted); margin: 12px 0; line-height: 1.6; }
   .note strong { color: var(--accent); }
+  .warn-note { background: rgba(255,107,53,0.05); border-left: 3px solid var(--orange); padding: 12px 16px; font-size: 12px; color: var(--muted); margin: 12px 0; line-height: 1.6; }
+  .warn-note strong { color: var(--orange); }
 
-  /* Progress bar */
-  .progress-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24px;
-  }
-  .progress-track {
-    height: 3px;
-    background: var(--border);
-    flex: 1;
-    margin-left: 20px;
-    position: relative;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent), var(--green));
-    transition: width 0.5s ease;
-  }
+  code { background: rgba(0,229,255,0.08); color: var(--accent); padding: 1px 6px; font-size: 0.9em; font-family: 'JetBrains Mono', monospace; }
+  hr.div { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
 
-  .section-title {
+  /* ── WHY C — stat row ── */
+  .stat-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin: 24px 0; }
+  .stat-box { background: var(--panel); border: 1px solid var(--border); padding: 18px; }
+  .stat-box .num { font-family: 'Bebas Neue', sans-serif; font-size: 40px; color: var(--accent); line-height: 1; margin-bottom: 4px; }
+  .stat-box .lbl { font-size: 10px; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; line-height: 1.5; }
+
+  .why-block { margin-bottom: 28px; }
+  .why-block h3 { font-size: 13px; font-weight: 600; color: #fff; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  .why-block p { font-size: 12px; color: var(--muted); line-height: 1.8; }
+
+  /* ── ROADMAP ── */
+  .phase-block {
+    border: 1px solid var(--border);
+    margin-bottom: 20px;
+    background: var(--panel);
+  }
+  .phase-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap; gap: 8px;
+  }
+  .phase-left { display: flex; align-items: center; gap: 16px; }
+  .phase-num {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 36px;
-    color: #fff;
-    letter-spacing: 0.06em;
-    margin-bottom: 6px;
+    font-size: 28px;
+    color: var(--accent);
+    line-height: 1;
+    min-width: 40px;
   }
-  .section-desc {
-    font-size: 12px;
-    color: var(--muted);
-    margin-bottom: 32px;
-    letter-spacing: 0.04em;
+  .phase-title { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 2px; }
+  .phase-time { font-size: 10px; color: var(--muted); letter-spacing: 0.1em; }
+  .phase-badge {
+    font-size: 10px; padding: 3px 10px; letter-spacing: 0.1em; border: 1px solid;
+    white-space: nowrap;
+  }
+  .phase-badge.active  { color: var(--green);  border-color: rgba(0,255,136,0.3);  background: rgba(0,255,136,0.08); }
+  .phase-badge.next    { color: var(--orange); border-color: rgba(255,107,53,0.3); background: rgba(255,107,53,0.08); }
+  .phase-badge.future  { color: var(--dim);    border-color: var(--border);         background: transparent; }
+
+  .phase-body { padding: 16px 20px; }
+  .phase-body p { font-size: 12px; color: var(--muted); line-height: 1.75; margin-bottom: 12px; }
+
+  .target-list { list-style: none; margin: 8px 0 0; }
+  .target-list li {
+    font-size: 11px; color: var(--muted);
+    padding: 5px 0 5px 18px;
+    border-bottom: 1px solid rgba(30,37,53,0.4);
+    position: relative;
+  }
+  .target-list li::before { content: '→'; position: absolute; left: 0; color: var(--accent); }
+  .target-list li:last-child { border-bottom: none; }
+
+  .build-tag {
+    display: inline-block; font-size: 10px; padding: 2px 8px; margin: 2px;
+    background: rgba(189,147,249,0.08); border: 1px solid rgba(189,147,249,0.2); color: var(--purple); letter-spacing: 0.08em;
   }
 
-  @media (max-width: 600px) {
+  /* ── RESOURCES ── */
+  .resource-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; margin-top: 16px; }
+  .resource-card {
+    background: var(--panel); border: 1px solid var(--border); padding: 18px;
+    text-decoration: none; display: block; transition: border-color 0.2s;
+  }
+  .resource-card:hover { border-color: var(--accent); }
+  .resource-type { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); margin-bottom: 8px; }
+  .resource-name { font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+  .resource-desc { font-size: 11px; color: var(--muted); line-height: 1.6; }
+  .resource-tag { display: inline-block; margin-top: 10px; font-size: 10px; padding: 2px 8px; background: rgba(0,229,255,0.08); color: var(--accent); border: 1px solid rgba(0,229,255,0.2); letter-spacing: 0.08em; }
+
+  /* ── PROGRESS TRACKER ── */
+  .progress-section-label {
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim);
+    margin-bottom: 14px; margin-top: 32px;
+  }
+  .progress-section-label:first-child { margin-top: 0; }
+
+  .overall-bar {
+    background: var(--panel); border: 1px solid var(--border); padding: 20px 24px; margin-bottom: 28px;
+  }
+  .overall-bar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .overall-bar-title { font-size: 12px; font-weight: 600; color: #fff; letter-spacing: 0.08em; }
+  .overall-bar-pct { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--accent); line-height: 1; }
+  .bar-track { height: 4px; background: var(--border); overflow: hidden; margin-bottom: 8px; }
+  .bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--green)); transition: width 0.5s ease; }
+  .overall-bar-sub { font-size: 11px; color: var(--dim); }
+
+  .todo-phase {
+    border: 1px solid var(--border); margin-bottom: 16px; background: var(--panel);
+  }
+  .todo-phase-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px; border-bottom: 1px solid var(--border); cursor: pointer;
+    user-select: none;
+  }
+  .todo-phase-header:hover { background: rgba(255,255,255,0.02); }
+  .todo-phase-left { display: flex; align-items: center; gap: 12px; }
+  .todo-phase-name { font-size: 12px; font-weight: 600; color: #fff; letter-spacing: 0.06em; }
+  .todo-phase-progress { font-size: 11px; color: var(--muted); }
+  .todo-phase-bar-wrap { display: flex; align-items: center; gap: 10px; }
+  .mini-bar { width: 80px; height: 3px; background: var(--border); overflow: hidden; }
+  .mini-bar-fill { height: 100%; background: var(--green); transition: width 0.4s ease; }
+  .toggle-icon { color: var(--dim); font-size: 12px; transition: transform 0.2s; }
+  .todo-phase.open .toggle-icon { transform: rotate(90deg); }
+
+  .todo-items { display: none; padding: 8px 0; }
+  .todo-phase.open .todo-items { display: block; }
+
+  .todo-item {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 10px 18px;
+    border-bottom: 1px solid rgba(30,37,53,0.5);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .todo-item:last-child { border-bottom: none; }
+  .todo-item:hover { background: rgba(255,255,255,0.02); }
+
+  .todo-checkbox {
+    width: 16px; height: 16px; min-width: 16px;
+    border: 1px solid var(--dim);
+    background: transparent;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: var(--green);
+    transition: all 0.15s;
+    margin-top: 1px;
+  }
+  .todo-item.done .todo-checkbox {
+    border-color: var(--green);
+    background: rgba(0,255,136,0.1);
+  }
+  .todo-item.done .todo-checkbox::after { content: '✓'; }
+
+  .todo-text { flex: 1; }
+  .todo-title { font-size: 12px; color: var(--text); line-height: 1.4; transition: color 0.15s; }
+  .todo-item.done .todo-title { color: var(--dim); text-decoration: line-through; }
+  .todo-sub { font-size: 10px; color: var(--muted); margin-top: 2px; line-height: 1.5; }
+
+  .todo-reset-btn {
+    background: none; border: 1px solid var(--border); color: var(--dim);
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 4px 12px;
+    cursor: pointer; letter-spacing: 0.08em; transition: all 0.2s; margin-top: 24px;
+  }
+  .todo-reset-btn:hover { border-color: var(--orange); color: var(--orange); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
     .hero, .content { padding: 30px 20px; }
-    .tabs { padding: 0 20px; }
+    .tabs { padding: 0 16px; }
     h1 { font-size: 52px; }
+    .stat-row { grid-template-columns: repeat(2, 1fr); }
+    .hero-top { flex-direction: column; }
+  }
+  @media (max-width: 480px) {
+    h1 { font-size: 40px; }
+    .tab { padding: 12px 12px; font-size: 10px; }
+    .overall-bar-pct { font-size: 22px; }
   }
 </style>
 </head>
 <body>
 
 <div class="hero">
-  <div class="tag">⚙ Arch Linux · C Development</div>
-  <h1>C DEV<br><span>ENVIRONMENT</span></h1>
-  <p class="subtitle">// terminal-first · progressive · powerful · yours</p>
+  <div class="hero-top">
+    <div>
+      <div class="tag">⚙ Arch Linux · C Development</div>
+      <h1>C DEV<br><span>ENVIRONMENT</span></h1>
+      <p class="subtitle">// terminal-first · progressive · powerful · yours</p>
+    </div>
+    <a class="phase1-link" href="https://rudv-ar.github.io/C-Phase-1" target="_blank" rel="noopener">
+      C-Phase-1 Journal
+    </a>
+  </div>
+
+  <div class="hero-progress">
+    <span class="hero-progress-label">Overall Progress</span>
+    <div class="hero-progress-track">
+      <div class="hero-progress-fill" id="heroProgressFill"></div>
+    </div>
+    <span class="hero-progress-pct" id="heroProgressPct">0%</span>
+  </div>
 </div>
 
 <nav class="tabs">
-  <button class="tab active" onclick="show('install', this)">01 · Install</button>
-  <button class="tab" onclick="show('editor', this)">02 · Editor</button>
-  <button class="tab" onclick="show('debug', this)">03 · Debug</button>
-  <button class="tab" onclick="show('build', this)">04 · Build</button>
-  <button class="tab" onclick="show('workflow', this)">05 · Workflow</button>
-  <button class="tab" onclick="show('learn', this)">06 · Learn</button>
+  <button class="tab active" onclick="show('whyc',     this)">00 · Why C</button>
+  <button class="tab"        onclick="show('install',  this)">01 · Install</button>
+  <button class="tab"        onclick="show('editor',   this)">02 · Editor</button>
+  <button class="tab"        onclick="show('debug',    this)">03 · Debug</button>
+  <button class="tab"        onclick="show('build',    this)">04 · Build</button>
+  <button class="tab"        onclick="show('workflow', this)">05 · Workflow</button>
+  <button class="tab"        onclick="show('roadmap',  this)">06 · Roadmap</button>
+  <button class="tab"        onclick="show('progress', this)">07 · Progress</button>
 </nav>
 
 <div class="content">
 
-  <!-- INSTALL -->
-  <div class="section active" id="install">
-    <div class="section-title">Core Toolchain</div>
-    <p class="section-desc">Everything you need from the Arch repos — compiler, debugger, build tools.</p>
+<!-- ============================================================ 00 · WHY C -->
+<div class="section active" id="whyc">
+  <div class="section-title">Why C?</div>
+  <p class="section-desc">Before writing a single line, understand what you are learning and why it matters. C is not just a language — it is the foundation of the entire computing world as it exists today.</p>
 
-    <div class="step" data-n="1">
-      <h3>Update System</h3>
-      <p>Always sync before installing anything on Arch.</p>
-      <div class="term">
-        <div class="term-bar">
-          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-          <span class="term-label">bash</span>
-          <button class="copy-btn" onclick="copyCode(this, 'sudo pacman -Syu')">copy</button>
-        </div>
-        <div class="term-body"><pre><span class="p">$</span> <span class="cmd">sudo pacman</span> <span class="arg">-Syu</span></pre></div>
-      </div>
+  <div class="stat-row">
+    <div class="stat-box"><div class="num">50+</div><div class="lbl">Years in active production use</div></div>
+    <div class="stat-box"><div class="num">#1</div><div class="lbl">Language of operating system kernels</div></div>
+    <div class="stat-box"><div class="num">~90%</div><div class="lbl">Of embedded systems written in C or C++</div></div>
+    <div class="stat-box"><div class="num">0</div><div class="lbl">Layers between your code and the hardware</div></div>
+  </div>
+
+  <hr class="div">
+
+  <div class="why-block">
+    <h3>What C actually is</h3>
+    <p>C is a general-purpose, procedural programming language created at Bell Labs between 1969 and 1973 by Dennis Ritchie, originally to write the Unix operating system. It was designed with one primary goal: give programmers direct, efficient control over hardware while being portable across different machines. Where assembly language speaks to one specific CPU, C speaks to all of them — but still maps almost directly to machine instructions with no hidden overhead.</p>
+    <p>C has no garbage collector, no runtime virtual machine, no automatic memory management, no built-in bounds checking. You get memory, you manage it, you free it. The computer does exactly what you tell it — no more, no less. This is both C's greatest power and its greatest danger.</p>
+  </div>
+
+  <div class="why-block">
+    <h3>Where C runs today</h3>
+    <p>The Linux kernel — the operating system your Arch installation runs on — is written almost entirely in C. The GNU C Library (glibc) that your programs link against is C. CPython, the reference implementation of Python, is C. The V8 JavaScript engine inside Node.js and Chrome was built on C++ foundations with a C interface. SQLite, the most widely deployed database in the world, is pure C. OpenSSL, which secures most of the internet's encrypted traffic, is C. The firmware running on your SSD, your router, your keyboard microcontroller — all C.</p>
+    <p>When you write a Python script, your code runs inside a C program. When you use a Linux command like <code>ls</code> or <code>grep</code>, you are running a C binary that makes system calls to a C kernel. Understanding C means understanding the layer beneath everything else you will ever use.</p>
+  </div>
+
+  <div class="why-block">
+    <h3>Why a systems programmer must know C</h3>
+    <p>Systems programming means writing software that is close to the hardware — operating systems, device drivers, embedded firmware, network stacks, databases, compilers, virtual machines. At this level, you cannot afford the overhead of a managed runtime. You cannot afford unpredictable garbage collection pauses. You need to know exactly how much memory you are using, exactly when it is allocated and freed, exactly what your code compiles to. C gives you this precision. No other language at this level of abstraction comes close to its combination of portability, performance, and ecosystem.</p>
+    <p>Beyond the practical: learning C teaches you how programs actually work. You will understand the stack, the heap, pointers, memory layout, calling conventions, system calls — things that higher-level programmers work with daily but rarely understand at the level that lets them debug truly hard problems. A systems programmer who knows C can read kernel code, understand security vulnerabilities, write efficient algorithms, and reason about performance at a level that is simply inaccessible without this foundation.</p>
+  </div>
+
+  <hr class="div">
+
+  <div class="why-block">
+    <h3>C vs everything else — honestly</h3>
+  </div>
+
+  <table>
+    <tr><th>Language</th><th>Relationship to C</th><th>When to use instead</th></tr>
+    <tr><td class="highlight">C++</td><td style="color:var(--muted)">C with classes, templates, and RAII. Almost a superset. Shares the same low-level model.</td><td style="color:var(--muted)">When you need OOP, templates, or STL. Learn C first — C++ makes more sense after.</td></tr>
+    <tr><td class="highlight">Rust</td><td style="color:var(--muted)">Systems language designed to replace C with compile-time memory safety. Borrows C's mental model but enforces it.</td><td style="color:var(--muted)">New systems projects where memory safety is critical. C knowledge makes Rust vastly easier to learn.</td></tr>
+    <tr><td class="highlight">Python</td><td style="color:var(--muted)">Runs on CPython, a C program. High-level abstractions hide the machine entirely.</td><td style="color:var(--muted)">Scripting, data science, rapid prototyping. Never for systems work.</td></tr>
+    <tr><td class="highlight">Go</td><td style="color:var(--muted)">Compiled, garbage collected, designed for networked services. Borrows C's syntax, discards its power.</td><td style="color:var(--muted)">Network services, CLIs, DevOps tooling. Not for bare-metal.</td></tr>
+    <tr><td class="highlight">Assembly</td><td style="color:var(--muted)">One level below C. C compiles to assembly. Reading assembly is a skill C teaches you naturally.</td><td style="color:var(--muted)">Specific hotpaths, bootloaders, very specific hardware initialization. Rarely the full program.</td></tr>
+  </table>
+
+  <div class="note" style="margin-top:20px">
+    <strong>The path:</strong> Learn C deeply → understand the machine → learn Rust to write safe systems code → come back to C to read and contribute to the existing world of systems software. C is not going anywhere. The Linux kernel will be C for decades.
+  </div>
+
+  <hr class="div">
+
+  <div class="why-block">
+    <h3>What this environment gives you</h3>
+    <p>This setup — gcc, gdb, clangd, NvChad, Arch Linux — is a professional systems programming environment. gcc is the same compiler used to build the Linux kernel. gdb is what kernel developers use to debug. clangd gives you real-time static analysis that catches bugs before you compile. Arch Linux gives you a minimal, transparent system where you understand every installed package. There is no IDE magic hiding the underlying process. You will understand exactly what happens when you type <code>gcc -o prog prog.c</code>.</p>
+  </div>
+</div>
+
+<!-- ============================================================ 01 · INSTALL -->
+<div class="section" id="install">
+  <div class="section-title">Core Toolchain</div>
+  <p class="section-desc">Everything you need from the Arch repos. Each tool exists for a specific reason — understanding why you are installing it matters as much as installing it.</p>
+
+  <div class="step" data-n="1">
+    <h3>Update System First</h3>
+    <p>Arch uses a rolling release model — there is no version to upgrade to, just a continuous stream of updates. Always sync the package database and upgrade before installing anything to avoid dependency conflicts.</p>
+    <div class="term">
+      <div class="term-bar"><div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="term-label">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="term-body"><pre><span class="p">$</span> <span class="cmd">sudo pacman</span> <span class="arg">-Syu</span></pre></div>
     </div>
+  </div>
 
-    <div class="step" data-n="2">
-      <h3>Install Base Development Tools</h3>
-      <p>The <span class="highlight">base-devel</span> group includes gcc, make, and essential build utilities.</p>
-      <div class="term">
-        <div class="term-bar">
-          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-          <span class="term-label">bash</span>
-          <button class="copy-btn" onclick="copyCode(this, 'sudo pacman -S base-devel gcc gdb clang lldb cmake ninja valgrind')">copy</button>
-        </div>
-        <div class="term-body"><pre><span class="p">$</span> <span class="cmd">sudo pacman</span> <span class="arg">-S</span> <span class="val">base-devel gcc gdb clang lldb cmake ninja valgrind</span></pre></div>
-      </div>
+  <div class="step" data-n="2">
+    <h3>Install the Core Toolchain</h3>
+    <p><code>base-devel</code> is a package group containing gcc, make, binutils (the linker, assembler, and object inspection tools), and other build essentials. Install it as a group — every tool in it is something you will eventually need.</p>
+    <div class="term">
+      <div class="term-bar"><div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="term-label">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="term-body"><pre><span class="p">$</span> <span class="cmd">sudo pacman</span> <span class="arg">-S</span> <span class="val">base-devel gcc gdb clang lldb cmake ninja valgrind</span></pre></div>
     </div>
+  </div>
 
-    <div class="step" data-n="3">
-      <h3>Verify Installation</h3>
-      <div class="term">
-        <div class="term-bar">
-          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-          <span class="term-label">bash</span>
-          <button class="copy-btn" onclick="copyCode(this, 'gcc --version && gdb --version && make --version')">copy</button>
-        </div>
-        <div class="term-body"><pre><span class="p">$</span> <span class="cmd">gcc</span> <span class="arg">--version</span>
+  <div class="step" data-n="3">
+    <h3>Verify Everything Installed</h3>
+    <div class="term">
+      <div class="term-bar"><div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="term-label">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="term-body"><pre><span class="p">$</span> <span class="cmd">gcc</span> <span class="arg">--version</span>
 <span class="out">gcc (GCC) 14.x.x ...</span>
 <span class="p">$</span> <span class="cmd">gdb</span> <span class="arg">--version</span>
-<span class="out">GNU gdb (GDB) 15.x ...</span></pre></div>
-      </div>
-    </div>
-
-    <div class="cards">
-      <div class="card">
-        <div class="card-icon">⚡</div>
-        <h4>gcc</h4>
-        <p>GNU C Compiler. Industry standard, excellent diagnostics, broad platform support.</p>
-        <span class="badge">primary compiler</span>
-      </div>
-      <div class="card">
-        <div class="card-icon">🔬</div>
-        <h4>clang</h4>
-        <p>LLVM frontend. Friendlier error messages, static analysis, compatible with gcc flags.</p>
-        <span class="badge">alternative / analysis</span>
-      </div>
-      <div class="card">
-        <div class="card-icon">🐛</div>
-        <h4>gdb</h4>
-        <p>GNU Debugger. Set breakpoints, inspect memory, step through code line by line.</p>
-        <span class="badge">debugger</span>
-      </div>
-      <div class="card">
-        <div class="card-icon">🔩</div>
-        <h4>valgrind</h4>
-        <p>Memory error detector. Find leaks, invalid reads/writes, uninitialized values.</p>
-        <span class="badge">memory safety</span>
-      </div>
+<span class="out">GNU gdb (GDB) 15.x ...</span>
+<span class="p">$</span> <span class="cmd">clang</span> <span class="arg">--version</span>
+<span class="out">clang version 18.x ...</span>
+<span class="p">$</span> <span class="cmd">valgrind</span> <span class="arg">--version</span>
+<span class="out">valgrind-3.x.x</span></pre></div>
     </div>
   </div>
 
-  <!-- EDITOR -->
-  <div class="section" id="editor">
-    <div class="section-title">Editor Setup</div>
-    <p class="section-desc">Neovim with LSP — autocomplete, go-to-definition, inline errors, all in the terminal.</p>
-
-    <div class="step" data-n="1">
-      <h3>Install Neovim + Dependencies</h3>
-      <div class="term">
-        <div class="term-bar">
-          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-          <span class="term-label">bash</span>
-          <button class="copy-btn" onclick="copyCode(this, 'sudo pacman -S neovim ripgrep fd nodejs npm python python-pip')">copy</button>
-        </div>
-        <div class="term-body"><pre><span class="p">$</span> <span class="cmd">sudo pacman</span> <span class="arg">-S</span> <span class="val">neovim ripgrep fd nodejs npm python python-pip</span></pre></div>
-      </div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">⚡</div>
+      <h4>gcc — GNU C Compiler</h4>
+      <p>The primary compiler. Translates C source into machine code through 4 stages: preprocessing, compilation, assembly, and linking. The same compiler used to build the Linux kernel. Excellent warnings with <code>-Wall -Wextra</code>.</p>
+      <span class="badge">primary compiler</span>
     </div>
-
-    <div class="step" data-n="2">
-      <h3>Install clangd (C Language Server)</h3>
-      <p>clangd gives you IDE features: autocomplete, hover docs, go-to-definition, inline diagnostics.</p>
-      <div class="term">
-        <div class="term-bar">
-          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-          <span class="term-label">bash</span>
-          <button class="copy-btn" onclick="copyCode(this, 'sudo pacman -S clang')">copy</button>
-        </div>
-        <div class="term-body"><pre><span class="p">$</span> <span class="cmd">sudo pacman</span> <span class="arg">-S</span> <span class="val">clang</span>  <span class="cmt"># ships clangd</span>
-<span class="p">$</span> <span class="cmd">clangd</span> <span class="arg">--version</span></pre></div>
-      </div>
+    <div class="card">
+      <div class="card-icon">🔬</div>
+      <h4>clang — LLVM C Compiler</h4>
+      <p>Alternative compiler from the LLVM project. More readable error messages than gcc, better static analysis, and ships clangd — the language server that powers your editor's IDE features. Install both.</p>
+      <span class="badge">analysis + LSP</span>
     </div>
-
-    <div class="step" data-n="3">
-      <h3>Bootstrap Neovim with LazyVim (recommended)</h3>
-      <p>LazyVim is a modern Neovim config that works out of the box. Enables C/LSP with one extra.</p>
-      <div class="term">
-        <div class="term-bar">
-          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-          <span class="term-label">bash</span>
-          <button class="copy-btn" onclick="copyCode(this, 'git clone https://github.com/LazyVim/starter ~/.config/nvim')">copy</button>
-        </div>
-        <div class="term-body"><pre><span class="p">$</span> <span class="cmd">git clone</span> https://github.com/LazyVim/starter <span class="val">~/.config/nvim</span>
-<span class="p">$</span> <span class="cmd">rm</span> <span class="arg">-rf</span> ~/.config/nvim/.git
-<span class="p">$</span> <span class="cmd">nvim</span>  <span class="cmt"># plugins auto-install on first launch</span></pre></div>
-      </div>
+    <div class="card">
+      <div class="card-icon">🐛</div>
+      <h4>gdb — GNU Debugger</h4>
+      <p>The standard debugger for C on Linux. Set breakpoints, step through code line by line, inspect variables and memory, examine the call stack. When your program crashes, gdb tells you exactly where and why.</p>
+      <span class="badge">debugger</span>
     </div>
-
-    <div class="step" data-n="4">
-      <h3>Enable C Language Support</h3>
-      <p>Add this file to your LazyVim extras:</p>
-      <div class="term">
-        <div class="term-bar">
-          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-          <span class="term-label">~/.config/nvim/lua/config/lazy.lua</span>
-          <button class="copy-btn" onclick="copyCode(this, '{ import = \"lazyvim.plugins.extras.lang.clangd\" }')">copy</button>
-        </div>
-        <div class="term-body"><pre><span class="cmt">-- add inside the extras = {} table:</span>
-<span class="p"></span>{ <span class="key">import</span> = <span class="str">"lazyvim.plugins.extras.lang.clangd"</span> }</pre></div>
-      </div>
+    <div class="card">
+      <div class="card-icon">🔩</div>
+      <h4>valgrind — Memory Checker</h4>
+      <p>Runs your program in a sandboxed environment and reports every memory error: heap buffer overflows, use after free, memory leaks, reads of uninitialized memory. Slow but thorough. Use it before shipping.</p>
+      <span class="badge">memory safety</span>
     </div>
-
-    <div class="note">
-      <strong>compile_commands.json</strong> — clangd needs this to understand your project. CMake generates it automatically (<code>-DCMAKE_EXPORT_COMPILE_COMMANDS=ON</code>), or use <code>bear -- make</code> for Makefile projects.
+    <div class="card">
+      <div class="card-icon">🏗️</div>
+      <h4>cmake + ninja</h4>
+      <p>CMake generates build files from a portable description. Ninja executes those builds fast. Together they are the modern standard for C projects with multiple source files, external dependencies, and cross-platform builds.</p>
+      <span class="badge">build system</span>
     </div>
+    <div class="card">
+      <div class="card-icon">🔗</div>
+      <h4>binutils</h4>
+      <p>Included in base-devel. Contains <code>ld</code> (linker), <code>as</code> (assembler), <code>objdump</code> (disassemble binaries), <code>nm</code> (list symbols), <code>readelf</code> (inspect ELF files). Essential for understanding what your compiler produces.</p>
+      <span class="badge">binary tools</span>
+    </div>
+  </div>
+</div>
 
-    <div class="step" data-n="5">
-      <h3>Key Neovim Shortcuts for C Dev</h3>
-      <table>
-        <tr><th>Key</th><th>Action</th></tr>
-        <tr><td><span class="kbd">gd</span></td><td>Go to definition</td></tr>
-        <tr><td><span class="kbd">gr</span></td><td>Find all references</td></tr>
-        <tr><td><span class="kbd">K</span></td><td>Hover documentation</td></tr>
-        <tr><td><span class="kbd">&lt;leader&gt;ca</span></td><td>Code action (fix, refactor)</td></tr>
-        <tr><td><span class="kbd">&lt;leader&gt;cr</span></td><td>Rename symbol</td></tr>
-        <tr><td><span class="kbd">]d</span> / <span class="kbd">[d</span></td><td>Next / prev diagnostic</td></tr>
-        <tr><td><span class="kbd">&lt;leader&gt;/</span></td><td>Live grep (ripgrep)</td></tr>
-      </table>
+<!-- ============================================================ 02 · EDITOR -->
+<div class="section" id="editor">
+  <div class="section-title">Editor Setup</div>
+  <p class="section-desc">NvChad (Neovim) with clangd LSP — real-time diagnostics, autocomplete, go-to-definition, and inline errors, entirely in the terminal. No GUI required.</p>
+
+  <div class="step" data-n="1">
+    <h3>Install Neovim and Dependencies</h3>
+    <p>Neovim needs ripgrep (fast text search) and fd (fast file finder) for its Telescope fuzzy finder. Node.js and npm are required by some LSP servers.</p>
+    <div class="term">
+      <div class="term-bar"><div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="term-label">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="term-body"><pre><span class="p">$</span> <span class="cmd">sudo pacman</span> <span class="arg">-S</span> <span class="val">neovim ripgrep fd nodejs npm</span></pre></div>
     </div>
   </div>
 
-  <!-- DEBUG -->
-  <div class="section" id="debug">
-    <div class="section-title">Debugging</div>
-    <p class="section-desc">GDB essentials + memory checking with Valgrind.</p>
-
-    <div class="step" data-n="1">
-      <h3>Compile with Debug Symbols</h3>
-      <p>Always use <span class="highlight">-g</span> (and disable optimizations with <span class="highlight">-O0</span>) when debugging.</p>
-      <div class="term">
-        <div class="term-bar">
-          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-          <span class="term-label">bash</span>
-          <button class="copy-btn" onclick="copyCode(this, 'gcc -g -O0 -Wall -Wextra -o myprog myprog.c')">copy</button>
-        </div>
-        <div class="term-body"><pre><span class="p">$</span> <span class="cmd">gcc</span> <span class="arg">-g -O0 -Wall -Wextra</span> <span class="arg">-o</span> myprog myprog.c</pre></div>
-      </div>
-    </div>
-
-    <div class="step" data-n="2">
-      <h3>GDB Quick Session</h3>
-      <div class="term">
-        <div class="term-bar">
-          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-          <span class="term-label">gdb session</span>
-          <button class="copy-btn" onclick="copyCode(this, 'gdb ./myprog')">copy</button>
-        </div>
-        <div class="term-body"><pre><span class="p">$</span> <span class="cmd">gdb</span> ./myprog
-<span class="out">(gdb)</span> <span class="cmd">break</span> <span class="val">main</span>         <span class="cmt"># breakpoint at main</span>
-<span class="out">(gdb)</span> <span class="cmd">run</span>                <span class="cmt"># start program</span>
-<span class="out">(gdb)</span> <span class="cmd">next</span>               <span class="cmt"># step over (n)</span>
-<span class="out">(gdb)</span> <span class="cmd">step</span>               <span class="cmt"># step into (s)</span>
-<span class="out">(gdb)</span> <span class="cmd">print</span> <span class="val">my_var</span>       <span class="cmt"># inspect variable</span>
-<span class="out">(gdb)</span> <span class="cmd">backtrace</span>          <span class="cmt"># show call stack (bt)</span>
-<span class="out">(gdb)</span> <span class="cmd">continue</span>           <span class="cmt"># resume (c)</span>
-<span class="out">(gdb)</span> <span class="cmd">quit</span>               <span class="cmt"># exit</span></pre></div>
-      </div>
-    </div>
-
-    <div class="step" data-n="3">
-      <h3>Valgrind — Memory Leak Detection</h3>
-      <div class="term">
-        <div class="term-bar">
-          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-          <span class="term-label">bash</span>
-          <button class="copy-btn" onclick="copyCode(this, 'valgrind --leak-check=full --show-leak-kinds=all ./myprog')">copy</button>
-        </div>
-        <div class="term-body"><pre><span class="p">$</span> <span class="cmd">valgrind</span> <span class="arg">--leak-check=full --show-leak-kinds=all</span> ./myprog
-<span class="out">==1234== HEAP SUMMARY:
-==1234==   in use at exit: 0 bytes in 0 blocks
-==1234==   total heap usage: 3 allocs, 3 frees
-==1234== All heap blocks were freed -- no leaks are possible ✓</span></pre></div>
-      </div>
-    </div>
-
-    <div class="step" data-n="4">
-      <h3>AddressSanitizer (faster than Valgrind)</h3>
-      <p>Compile-time instrumentation for catching memory bugs at runtime — no separate tool needed.</p>
-      <div class="term">
-        <div class="term-bar">
-          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-          <span class="term-label">bash</span>
-          <button class="copy-btn" onclick="copyCode(this, 'gcc -g -fsanitize=address,undefined -o myprog myprog.c')">copy</button>
-        </div>
-        <div class="term-body"><pre><span class="p">$</span> <span class="cmd">gcc</span> <span class="arg">-g -fsanitize=address,undefined</span> <span class="arg">-o</span> myprog myprog.c
-<span class="p">$</span> <span class="cmd">./myprog</span>   <span class="cmt"># ASAN output on violations</span></pre></div>
-      </div>
+  <div class="step" data-n="2">
+    <h3>Verify clangd is Available</h3>
+    <p>clangd ships with the <code>clang</code> package you already installed. It is the language server that powers all IDE features inside your editor — it runs in the background, analyzes your code continuously, and feeds diagnostics to Neovim over the LSP protocol.</p>
+    <div class="term">
+      <div class="term-bar"><div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="term-label">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="term-body"><pre><span class="p">$</span> <span class="cmd">clangd</span> <span class="arg">--version</span>
+<span class="out">clangd version 22.x.x ...</span></pre></div>
     </div>
   </div>
 
-  <!-- BUILD -->
-  <div class="section" id="build">
-    <div class="section-title">Build Systems</div>
-    <p class="section-desc">From a single Makefile to full CMake projects.</p>
+  <div class="step" data-n="3">
+    <h3>Configure LSP in NvChad</h3>
+    <p>Add <code>clangd</code> to your enabled servers in <code>~/.config/nvim/lua/configs/lspconfig.lua</code>. The server name must be the exact string <code>"clangd"</code>.</p>
+    <div class="term">
+      <div class="term-bar"><div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="term-label">~/.config/nvim/lua/configs/lspconfig.lua</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="term-body"><pre><span class="val">require</span>(<span class="str">"nvchad.configs.lspconfig"</span>).defaults()
 
-    <div class="step" data-n="1">
-      <h3>The Essential Makefile</h3>
-      <p>For small-to-medium projects, a well-structured Makefile is all you need.</p>
-      <div class="term">
-        <div class="term-bar">
-          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-          <span class="term-label">Makefile</span>
-          <button class="copy-btn" onclick="copyCode(this, 'Makefile content')">copy</button>
-        </div>
-        <div class="term-body"><pre><span class="key">CC</span>      = gcc
-<span class="key">CFLAGS</span>  = <span class="str">-Wall -Wextra -Wpedantic -std=c11 -O2</span>
-<span class="key">DBGFLAGS</span>= <span class="str">-g -O0 -fsanitize=address,undefined</span>
-<span class="key">SRC</span>     = $(wildcard src/*.c)
-<span class="key">OBJ</span>     = $(SRC:.c=.o)
-<span class="key">TARGET</span>  = myprog
+<span class="key">local</span> servers = { <span class="str">"lua_ls"</span>, <span class="str">"clangd"</span>, <span class="str">"bashls"</span>, <span class="str">"rust_analyzer"</span> }
+vim.lsp.<span class="val">enable</span>(servers)</pre></div>
+    </div>
+  </div>
+
+  <div class="step" data-n="4">
+    <h3>Give clangd a Project Root</h3>
+    <p>clangd searches upward from your file for a root marker: <code>.git</code>, <code>compile_commands.json</code>, or <code>compile_flags.txt</code>. For simple single-file projects, drop a <code>compile_flags.txt</code> in your project directory so clangd knows the C standard you are using.</p>
+    <div class="term">
+      <div class="term-bar"><div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="term-label">bash — run from your project root</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="term-body"><pre><span class="p">$</span> <span class="cmd">echo</span> <span class="str">"-std=c11"</span> &gt; compile_flags.txt
+<span class="p">$</span> <span class="cmt"># clangd now knows: this is a C11 project</span></pre></div>
+    </div>
+  </div>
+
+  <div class="step" data-n="5">
+    <h3>Verify LSP is Active</h3>
+    <p>Open a <code>.c</code> file in Neovim and run <code>:LspInfo</code>. You should see clangd listed under Active Clients with <code>Attached buffers: 1</code>.</p>
+    <div class="term">
+      <div class="term-bar"><div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="term-label">inside nvim — normal mode</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="term-body"><pre><span class="p">:</span><span class="cmd">LspInfo</span>
+
+<span class="out">vim.lsp: Active Clients ~</span>
+<span class="out">- clangd (id: 1)</span>
+<span class="out">  - Version: clangd version 22.x.x</span>
+<span class="out">  - Attached buffers: 1  ← this is what you want to see</span></pre></div>
+    </div>
+  </div>
+
+  <div class="step" data-n="6">
+    <h3>Key Mappings for C Development</h3>
+    <table>
+      <tr><th>Key</th><th>Action</th><th>When to use</th></tr>
+      <tr><td><span class="kbd">gd</span></td><td>Go to definition</td><td>Jump to where a function or variable is defined — even into library headers</td></tr>
+      <tr><td><span class="kbd">gr</span></td><td>Find all references</td><td>See every place a function or variable is used across your project</td></tr>
+      <tr><td><span class="kbd">K</span></td><td>Hover docs</td><td>Show the type signature and documentation for whatever is under the cursor</td></tr>
+      <tr><td><span class="kbd">F2</span></td><td>Rename symbol</td><td>Rename a function or variable everywhere in the project simultaneously</td></tr>
+      <tr><td><span class="kbd">Space+ca</span></td><td>Code action</td><td>Apply a quick fix suggested by clangd — add missing include, fix type, etc.</td></tr>
+      <tr><td><span class="kbd">]d / [d</span></td><td>Next / prev error</td><td>Jump between inline compiler diagnostics without leaving the file</td></tr>
+      <tr><td><span class="kbd">Ctrl+f</span></td><td>Find file</td><td>Fuzzy-find any file in the project by name</td></tr>
+      <tr><td><span class="kbd">Ctrl+g</span></td><td>Live grep</td><td>Search for any text across all files in the project</td></tr>
+    </table>
+  </div>
+
+  <div class="note">
+    <strong>What LSP gives you:</strong> clangd parses your entire project in real time. Every time you save, it re-analyzes and reports warnings and errors inline — before you compile. It catches format string mismatches, type errors, unused variables, missing includes, and undefined behavior patterns. Treat its inline warnings as mandatory. If clangd flags something, understand why before dismissing it.
+  </div>
+</div>
+
+<!-- ============================================================ 03 · DEBUG -->
+<div class="section" id="debug">
+  <div class="section-title">Debugging</div>
+  <p class="section-desc">Debugging in C is not optional — it is a core skill. Every C programmer spends significant time with gdb. Learn it early and it will save you hundreds of hours.</p>
+
+  <div class="step" data-n="1">
+    <h3>Always Compile with Debug Symbols</h3>
+    <p>The <code>-g</code> flag tells gcc to embed source-level debug information into the binary: line numbers, variable names, function names. Without it, gdb can only show you raw memory addresses. The <code>-O0</code> flag disables optimization — optimized code reorders and eliminates instructions in ways that make stepping through code confusing and misleading.</p>
+    <div class="term">
+      <div class="term-bar"><div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="term-label">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="term-body"><pre><span class="p">$</span> <span class="cmd">gcc</span> <span class="arg">-g -O0 -Wall -Wextra -std=c11</span> <span class="arg">-o</span> myprog myprog.c</pre></div>
+    </div>
+  </div>
+
+  <div class="step" data-n="2">
+    <h3>GDB Essential Commands</h3>
+    <p>These are the commands you will use in 90% of debugging sessions. The rest you can look up with <code>help</code> inside gdb.</p>
+    <div class="term">
+      <div class="term-bar"><div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="term-label">gdb session</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="term-body"><pre><span class="p">$</span> <span class="cmd">gdb</span> ./myprog
+<span class="out">(gdb)</span> <span class="cmd">break</span> <span class="val">main</span>            <span class="cmt"># breakpoint at start of main</span>
+<span class="out">(gdb)</span> <span class="cmd">break</span> <span class="val">myprog.c:42</span>     <span class="cmt"># breakpoint at line 42</span>
+<span class="out">(gdb)</span> <span class="cmd">run</span>                   <span class="cmt"># start the program</span>
+<span class="out">(gdb)</span> <span class="cmd">next</span>                  <span class="cmt"># step over — execute one line (n)</span>
+<span class="out">(gdb)</span> <span class="cmd">step</span>                  <span class="cmt"># step into — follow function calls (s)</span>
+<span class="out">(gdb)</span> <span class="cmd">finish</span>                <span class="cmt"># run until current function returns</span>
+<span class="out">(gdb)</span> <span class="cmd">print</span> <span class="val">my_var</span>          <span class="cmt"># print value of variable</span>
+<span class="out">(gdb)</span> <span class="cmd">print</span> <span class="val">*ptr</span>            <span class="cmt"># dereference and print pointer</span>
+<span class="out">(gdb)</span> <span class="cmd">info locals</span>           <span class="cmt"># show all local variables</span>
+<span class="out">(gdb)</span> <span class="cmd">backtrace</span>             <span class="cmt"># show call stack (bt)</span>
+<span class="out">(gdb)</span> <span class="cmd">x/16xb</span> <span class="val">0x7fffff...</span>    <span class="cmt"># examine 16 bytes of memory in hex</span>
+<span class="out">(gdb)</span> <span class="cmd">continue</span>              <span class="cmt"># resume until next breakpoint (c)</span>
+<span class="out">(gdb)</span> <span class="cmd">quit</span>                  <span class="cmt"># exit gdb</span></pre></div>
+    </div>
+  </div>
+
+  <div class="step" data-n="3">
+    <h3>Valgrind — Full Memory Error Detection</h3>
+    <p>Valgrind's Memcheck tool runs your program inside a virtual machine that intercepts every memory access. It detects heap buffer overflows, stack errors (with <code>--tool=exp-sgcheck</code>), use-after-free, double-free, and memory leaks. It is 10–50x slower than native execution, but it catches bugs that cause silent data corruption long before they manifest as crashes.</p>
+    <div class="term">
+      <div class="term-bar"><div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="term-label">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="term-body"><pre><span class="p">$</span> <span class="cmd">valgrind</span> <span class="arg">--leak-check=full --show-leak-kinds=all --track-origins=yes</span> ./myprog
+<span class="out">==1234== HEAP SUMMARY:</span>
+<span class="out">==1234==   in use at exit: 0 bytes in 0 blocks</span>
+<span class="out">==1234==   total heap usage: 3 allocs, 3 frees, 72 bytes allocated</span>
+<span class="out">==1234== All heap blocks were freed -- no leaks are possible ✓</span></pre></div>
+    </div>
+  </div>
+
+  <div class="step" data-n="4">
+    <h3>AddressSanitizer — Fast Runtime Checking</h3>
+    <p>ASan is a compiler-based memory error detector built into gcc and clang. It instruments your code at compile time with checks around every memory access. It is roughly 2x slower than native (much faster than Valgrind) and catches stack overflows, heap overflows, use-after-free, and use-after-return. Use it during development on every build. <code>-fsanitize=undefined</code> also catches integer overflow, null dereference, misaligned access, and dozens of other undefined behavior violations.</p>
+    <div class="term">
+      <div class="term-bar"><div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="term-label">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="term-body"><pre><span class="p">$</span> <span class="cmd">gcc</span> <span class="arg">-g -O0 -fsanitize=address,undefined -std=c11</span> <span class="arg">-o</span> myprog myprog.c
+<span class="p">$</span> <span class="cmd">./myprog</span>
+<span class="out">==ERROR: AddressSanitizer: heap-buffer-overflow</span>
+<span class="out">READ of size 4 at 0x... thread T0</span>
+<span class="out">    #0 0x... in my_function myprog.c:17</span>
+<span class="out">    #1 0x... in main myprog.c:42</span>
+<span class="cmt"># exact line number, exact error type, full stack trace</span></pre></div>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>Debugging workflow:</strong> First compile with ASAN (<code>-fsanitize=address,undefined</code>) and run. If it catches something, fix it. Then run under Valgrind for a thorough leak check. Use gdb when you need to step through logic interactively. These three tools together catch virtually every class of memory bug C programs can produce.
+  </div>
+</div>
+
+<!-- ============================================================ 04 · BUILD -->
+<div class="section" id="build">
+  <div class="section-title">Build Systems</div>
+  <p class="section-desc">For a single file, invoking gcc directly is fine. For real projects — multiple source files, headers, dependencies, debug and release configurations — you need a build system.</p>
+
+  <div class="step" data-n="1">
+    <h3>The Standard Compiler Flags</h3>
+    <p>These flags should be on every compile command during development. Treat compiler warnings as errors — a warning is the compiler telling you something is wrong, not just suspicious.</p>
+    <table>
+      <tr><th>Flag</th><th>What it does</th></tr>
+      <tr><td><span class="kbd">-Wall</span></td><td>Enable common warnings: unused variables, missing returns, type mismatches, format string issues</td></tr>
+      <tr><td><span class="kbd">-Wextra</span></td><td>Extra warnings: unused parameters, sign comparison, missing field initializers</td></tr>
+      <tr><td><span class="kbd">-Wpedantic</span></td><td>Strict ISO C conformance — warns about any gcc extension or non-standard code</td></tr>
+      <tr><td><span class="kbd">-std=c11</span></td><td>Compile as C11 (2011 standard). Use <code>c99</code> or <code>c17</code> if needed.</td></tr>
+      <tr><td><span class="kbd">-g</span></td><td>Embed debug symbols for gdb</td></tr>
+      <tr><td><span class="kbd">-O0</span></td><td>No optimization — predictable, debuggable code</td></tr>
+      <tr><td><span class="kbd">-O2</span></td><td>Release optimization — use for performance testing and shipping</td></tr>
+      <tr><td><span class="kbd">-fsanitize=address</span></td><td>AddressSanitizer — catches memory errors at runtime</td></tr>
+      <tr><td><span class="kbd">-fsanitize=undefined</span></td><td>Undefined Behavior Sanitizer — catches UB at runtime</td></tr>
+    </table>
+  </div>
+
+  <div class="step" data-n="2">
+    <h3>A Production-Ready Makefile</h3>
+    <p>Make is a build tool that tracks file dependencies and only recompiles what changed. Every experienced C developer can read and write Makefiles. This one has separate debug and release targets and automatic dependency tracking.</p>
+    <div class="term">
+      <div class="term-bar"><div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="term-label">Makefile</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="term-body"><pre><span class="key">CC</span>       = gcc
+<span class="key">CFLAGS</span>   = <span class="str">-Wall -Wextra -Wpedantic -std=c11</span>
+<span class="key">RELEASE</span>  = <span class="str">-O2</span>
+<span class="key">DEBUG</span>    = <span class="str">-g -O0 -fsanitize=address,undefined</span>
+<span class="key">SRC</span>      = $(wildcard src/*.c)
+<span class="key">OBJ</span>      = $(SRC:.c=.o)
+<span class="key">TARGET</span>   = myprog
 
 <span class="val">all</span>: $(TARGET)
 
 <span class="val">$(TARGET)</span>: $(OBJ)
-    $(CC) $(CFLAGS) <span class="arg">-o</span> $@ $^
+	$(CC) $(CFLAGS) $(RELEASE) <span class="arg">-o</span> $@ $^
 
-<span class="val">debug</span>: CFLAGS = $(DBGFLAGS)
+<span class="val">debug</span>: CFLAGS += $(DEBUG)
 <span class="val">debug</span>: $(TARGET)
 
+<span class="val">%.o</span>: <span class="val">%.c</span>
+	$(CC) $(CFLAGS) <span class="arg">-c -o</span> $@ $&lt;
+
 <span class="val">clean</span>:
-    rm -f $(OBJ) $(TARGET)
+	rm -f $(OBJ) $(TARGET)
 
 <span class="val">.PHONY</span>: all debug clean</pre></div>
-      </div>
     </div>
+  </div>
 
-    <div class="step" data-n="2">
-      <h3>CMake Project Structure</h3>
-      <p>For larger projects with dependencies, CMake + Ninja is the modern standard.</p>
-      <div class="term">
-        <div class="term-bar">
-          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-          <span class="term-label">CMakeLists.txt</span>
-          <button class="copy-btn" onclick="copyCode(this, 'cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug')">copy</button>
-        </div>
-        <div class="term-body"><pre><span class="key">cmake_minimum_required</span>(VERSION 3.20)
+  <div class="step" data-n="3">
+    <h3>CMake for Larger Projects</h3>
+    <p>CMake generates Makefiles or Ninja build files from a portable project description. Use it when your project has multiple directories, external libraries, or needs to build on different operating systems. The <code>CMAKE_EXPORT_COMPILE_COMMANDS=ON</code> setting generates a <code>compile_commands.json</code> file that clangd uses to understand your full project.</p>
+    <div class="term">
+      <div class="term-bar"><div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="term-label">CMakeLists.txt</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="term-body"><pre><span class="key">cmake_minimum_required</span>(VERSION 3.20)
 <span class="key">project</span>(MyProject C)
 <span class="key">set</span>(CMAKE_C_STANDARD <span class="val">11</span>)
-<span class="key">set</span>(CMAKE_EXPORT_COMPILE_COMMANDS <span class="val">ON</span>)  <span class="cmt"># for clangd!</span>
+<span class="key">set</span>(CMAKE_EXPORT_COMPILE_COMMANDS <span class="val">ON</span>)
 
 <span class="key">add_executable</span>(myprog src/main.c src/utils.c)
-<span class="key">target_compile_options</span>(myprog PRIVATE
-    <span class="str">-Wall -Wextra -Wpedantic</span>)</pre></div>
-      </div>
-      <div class="term">
-        <div class="term-bar">
-          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-          <span class="term-label">bash · build commands</span>
-          <button class="copy-btn" onclick="copyCode(this, 'cmake -B build -G Ninja && cmake --build build')">copy</button>
-        </div>
-        <div class="term-body"><pre><span class="p">$</span> <span class="cmd">cmake</span> <span class="arg">-B build -G Ninja -DCMAKE_BUILD_TYPE=Debug</span>
-<span class="p">$</span> <span class="cmd">cmake</span> <span class="arg">--build build</span>       <span class="cmt"># or: ninja -C build</span>
-<span class="p">$</span> <span class="cmt"># symlink compile_commands for clangd:</span>
-<span class="p">$</span> <span class="cmd">ln</span> <span class="arg">-s</span> build/compile_commands.json .</pre></div>
-      </div>
+<span class="key">target_compile_options</span>(myprog PRIVATE <span class="str">-Wall -Wextra -Wpedantic</span>)</pre></div>
     </div>
-
-    <div class="step" data-n="3">
-      <h3>Recommended Compiler Flags</h3>
-      <table>
-        <tr><th>Flag</th><th>Purpose</th></tr>
-        <tr><td><span class="kbd">-Wall -Wextra</span></td><td>Enable most useful warnings</td></tr>
-        <tr><td><span class="kbd">-Wpedantic</span></td><td>Strict ISO C conformance</td></tr>
-        <tr><td><span class="kbd">-std=c11</span></td><td>Use C11 standard</td></tr>
-        <tr><td><span class="kbd">-O2</span></td><td>Optimized release build</td></tr>
-        <tr><td><span class="kbd">-g</span></td><td>Include debug symbols</td></tr>
-        <tr><td><span class="kbd">-fsanitize=address</span></td><td>AddressSanitizer (ASAN)</td></tr>
-        <tr><td><span class="kbd">-fsanitize=undefined</span></td><td>Undefined Behavior Sanitizer</td></tr>
-      </table>
+    <div class="term">
+      <div class="term-bar"><div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="term-label">bash — build commands</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="term-body"><pre><span class="p">$</span> <span class="cmd">cmake</span> <span class="arg">-B build -G Ninja -DCMAKE_BUILD_TYPE=Debug</span>
+<span class="p">$</span> <span class="cmd">cmake</span> <span class="arg">--build build</span>
+<span class="p">$</span> <span class="cmd">ln</span> <span class="arg">-s</span> build/compile_commands.json .  <span class="cmt"># link for clangd</span></pre></div>
     </div>
   </div>
-
-  <!-- WORKFLOW -->
-  <div class="section" id="workflow">
-    <div class="section-title">Daily Workflow</div>
-    <p class="section-desc">Terminal multiplexer, version control, and productivity tools.</p>
-
-    <div class="step" data-n="1">
-      <h3>tmux — Split Terminal Sessions</h3>
-      <p>Run editor, build output, and a REPL all at once without leaving the terminal.</p>
-      <div class="term">
-        <div class="term-bar">
-          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-          <span class="term-label">bash</span>
-          <button class="copy-btn" onclick="copyCode(this, 'sudo pacman -S tmux')">copy</button>
-        </div>
-        <div class="term-body"><pre><span class="p">$</span> <span class="cmd">sudo pacman</span> <span class="arg">-S</span> <span class="val">tmux</span></pre></div>
-      </div>
-      <table>
-        <tr><th>Key</th><th>Action</th></tr>
-        <tr><td><span class="kbd">Ctrl+b %</span></td><td>Vertical split</td></tr>
-        <tr><td><span class="kbd">Ctrl+b "</span></td><td>Horizontal split</td></tr>
-        <tr><td><span class="kbd">Ctrl+b arrow</span></td><td>Move between panes</td></tr>
-        <tr><td><span class="kbd">Ctrl+b c</span></td><td>New window</td></tr>
-        <tr><td><span class="kbd">Ctrl+b d</span></td><td>Detach session</td></tr>
-      </table>
-    </div>
-
-    <div class="step" data-n="2">
-      <h3>git — Version Control</h3>
-      <div class="term">
-        <div class="term-bar">
-          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-          <span class="term-label">bash</span>
-          <button class="copy-btn" onclick="copyCode(this, 'sudo pacman -S git && git config --global core.editor nvim')">copy</button>
-        </div>
-        <div class="term-body"><pre><span class="p">$</span> <span class="cmd">sudo pacman</span> <span class="arg">-S</span> <span class="val">git</span>
-<span class="p">$</span> <span class="cmd">git config</span> <span class="arg">--global</span> user.name  <span class="str">"Your Name"</span>
-<span class="p">$</span> <span class="cmd">git config</span> <span class="arg">--global</span> user.email <span class="str">"you@email.com"</span>
-<span class="p">$</span> <span class="cmd">git config</span> <span class="arg">--global</span> core.editor <span class="str">nvim</span></pre></div>
-      </div>
-    </div>
-
-    <div class="step" data-n="3">
-      <h3>ctags / cscope — Code Navigation</h3>
-      <p>Jump between functions across files without an LSP.</p>
-      <div class="term">
-        <div class="term-bar">
-          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-          <span class="term-label">bash</span>
-          <button class="copy-btn" onclick="copyCode(this, 'sudo pacman -S ctags && ctags -R .')">copy</button>
-        </div>
-        <div class="term-body"><pre><span class="p">$</span> <span class="cmd">sudo pacman</span> <span class="arg">-S</span> <span class="val">ctags</span>
-<span class="p">$</span> <span class="cmd">ctags</span> <span class="arg">-R</span> .    <span class="cmt"># run from project root</span></pre></div>
-      </div>
-    </div>
-
-    <div class="step" data-n="4">
-      <h3>Handy .bashrc Aliases</h3>
-      <div class="term">
-        <div class="term-bar">
-          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-          <span class="term-label">~/.bashrc</span>
-          <button class="copy-btn" onclick="copyCode(this, 'alias cc=\'gcc -Wall -Wextra -std=c11\'')">copy</button>
-        </div>
-        <div class="term-body"><pre><span class="cmt"># Quick compile alias</span>
-<span class="key">alias</span> <span class="val">cc</span>=<span class="str">'gcc -Wall -Wextra -std=c11'</span>
-<span class="key">alias</span> <span class="val">ccd</span>=<span class="str">'gcc -g -O0 -fsanitize=address,undefined'</span>
-
-<span class="cmt"># One-liner: compile & run</span>
-<span class="key">function</span> <span class="val">crun</span>() {
-  gcc <span class="arg">-Wall -Wextra -std=c11 -o /tmp/crun</span> "$1" && /tmp/crun
-}</pre></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- LEARN -->
-  <div class="section" id="learn">
-    <div class="section-title">Learning Path</div>
-    <p class="section-desc">A progressive roadmap from beginner to systems programmer.</p>
-
-    <div class="cards">
-      <div class="card">
-        <div class="card-icon">🌱</div>
-        <h4>Phase 1 · Foundations</h4>
-        <p>Types, control flow, functions, arrays, pointers, strings, basic I/O. Write programs, compile them, break them.</p>
-        <span class="badge">weeks 1–4</span>
-      </div>
-      <div class="card">
-        <div class="card-icon">🔧</div>
-        <h4>Phase 2 · Memory</h4>
-        <p>Stack vs heap, malloc/free, pointer arithmetic, structs, unions, function pointers.</p>
-        <span class="badge">weeks 5–8</span>
-      </div>
-      <div class="card">
-        <div class="card-icon">📦</div>
-        <h4>Phase 3 · Systems</h4>
-        <p>File I/O, processes (fork/exec), signals, sockets, POSIX APIs. The Linux kernel is your playground.</p>
-        <span class="badge">weeks 9–16</span>
-      </div>
-      <div class="card">
-        <div class="card-icon">🚀</div>
-        <h4>Phase 4 · Projects</h4>
-        <p>Build a shell, a HTTP server, a malloc replacement, a text editor. Ship real code.</p>
-        <span class="badge">ongoing</span>
-      </div>
-    </div>
-
-    <div class="step" data-n="1" style="margin-top:32px">
-      <h3>Essential Resources</h3>
-      <table>
-        <tr><th>Resource</th><th>Why</th></tr>
-        <tr><td><span class="highlight">K&R — The C Programming Language</span></td><td>The bible. Read it cover to cover.</td></tr>
-        <tr><td><span class="highlight">CS:APP (Bryant & O'Hallaron)</span></td><td>C + systems programming + how computers work</td></tr>
-        <tr><td><span class="highlight">man pages</span></td><td><code>man 3 printf</code>, <code>man 2 open</code> — always within reach</td></tr>
-        <tr><td><span class="highlight">godbolt.org</span></td><td>See your C code as assembly live</td></tr>
-        <tr><td><span class="highlight">cdecl.org</span></td><td>Decode complex C declarations in plain English</td></tr>
-      </table>
-    </div>
-
-    <div class="step" data-n="2">
-      <h3>Your First C Program on Arch</h3>
-      <div class="term">
-        <div class="term-bar">
-          <div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-          <span class="term-label">hello.c → compile → run</span>
-          <button class="copy-btn" onclick="copyCode(this, 'nvim hello.c')">copy</button>
-        </div>
-        <div class="term-body"><pre><span class="p">$</span> <span class="cmd">nvim</span> hello.c
-
-<span class="cmt">// hello.c</span>
-<span class="key">#include</span> <span class="str">&lt;stdio.h&gt;</span>
-<span class="key">int</span> <span class="val">main</span>(<span class="key">void</span>) {
-    printf(<span class="str">"arch + c = 🔥\n"</span>);
-    <span class="key">return</span> <span class="val">0</span>;
-}
-
-<span class="p">$</span> <span class="cmd">gcc</span> <span class="arg">-Wall -Wextra -std=c11 -o</span> hello hello.c
-<span class="p">$</span> <span class="cmd">./hello</span>
-<span class="out">arch + c = 🔥</span></pre></div>
-      </div>
-    </div>
-
-    <div class="note">
-      <strong>Pro tip:</strong> Use <code>man 3 &lt;function&gt;</code> for C library functions and <code>man 2 &lt;syscall&gt;</code> for Linux syscalls. Install <code>man-pages</code> if needed: <code>sudo pacman -S man-pages</code>
-    </div>
-  </div>
-
 </div>
 
+<!-- ============================================================ 05 · WORKFLOW -->
+<div class="section" id="workflow">
+  <div class="section-title">Daily Workflow</div>
+  <p class="section-desc">The tools and habits that make terminal-based C development fast and productive.</p>
+
+  <div class="step" data-n="1">
+    <h3>tmux — Persistent Terminal Sessions</h3>
+    <p>tmux is a terminal multiplexer. It lets you split your terminal into panes (editor in one, compiler output in another, program output in a third), and it keeps sessions alive even when you close your terminal. Detach a session with <code>Ctrl+b d</code> and reattach later with <code>tmux attach</code> — your running program and all your panes are exactly where you left them.</p>
+    <div class="term">
+      <div class="term-bar"><div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="term-label">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="term-body"><pre><span class="p">$</span> <span class="cmd">sudo pacman</span> <span class="arg">-S</span> <span class="val">tmux</span></pre></div>
+    </div>
+    <table>
+      <tr><th>Key</th><th>Action</th></tr>
+      <tr><td><span class="kbd">Ctrl+b %</span></td><td>Vertical split — two panes side by side</td></tr>
+      <tr><td><span class="kbd">Ctrl+b "</span></td><td>Horizontal split — pane above and below</td></tr>
+      <tr><td><span class="kbd">Ctrl+b arrow</span></td><td>Move focus between panes</td></tr>
+      <tr><td><span class="kbd">Ctrl+b c</span></td><td>New window (like a new tab)</td></tr>
+      <tr><td><span class="kbd">Ctrl+b d</span></td><td>Detach session — leave it running in background</td></tr>
+      <tr><td><span class="kbd">Ctrl+b [</span></td><td>Scroll mode — use arrow keys to scroll, q to exit</td></tr>
+    </table>
+  </div>
+
+  <div class="step" data-n="2">
+    <h3>git — Version Control from Day One</h3>
+    <p>Commit your code constantly. Every time your program compiles and produces correct output — commit. Every time you fix a bug — commit. The discipline of committing frequently means you can always go back. Never lose working code again.</p>
+    <div class="term">
+      <div class="term-bar"><div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="term-label">bash — first-time setup</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="term-body"><pre><span class="p">$</span> <span class="cmd">git config</span> <span class="arg">--global</span> user.name  <span class="str">"Your Name"</span>
+<span class="p">$</span> <span class="cmd">git config</span> <span class="arg">--global</span> user.email <span class="str">"you@email.com"</span>
+<span class="p">$</span> <span class="cmd">git config</span> <span class="arg">--global</span> core.editor <span class="str">nvim</span>
+<span class="p">$</span> <span class="cmd">git init</span> &amp;&amp; <span class="cmd">git add</span> <span class="arg">.</span> &amp;&amp; <span class="cmd">git commit</span> <span class="arg">-m</span> <span class="str">"initial"</span></pre></div>
+    </div>
+  </div>
+
+  <div class="step" data-n="3">
+    <h3>Useful Shell Aliases for C</h3>
+    <p>Add these to your <code>~/.bashrc</code> or <code>~/.zshrc</code>. The <code>crun</code> function compiles and immediately runs a single-file C program — useful for quick experiments.</p>
+    <div class="term">
+      <div class="term-bar"><div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="term-label">~/.bashrc</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="term-body"><pre><span class="cmt"># compile with all warnings</span>
+<span class="key">alias</span> <span class="val">cc</span>=<span class="str">'gcc -Wall -Wextra -Wpedantic -std=c11'</span>
+
+<span class="cmt"># compile with sanitizers for debugging</span>
+<span class="key">alias</span> <span class="val">ccd</span>=<span class="str">'gcc -g -O0 -fsanitize=address,undefined -std=c11'</span>
+
+<span class="cmt"># compile a single file and run it immediately</span>
+<span class="key">function</span> <span class="val">crun</span>() {
+    gcc <span class="arg">-Wall -Wextra -std=c11 -o</span> /tmp/crun_out <span class="str">"$1"</span> &amp;&amp; /tmp/crun_out
+}
+
+<span class="cmt"># check exit code of last command</span>
+<span class="key">alias</span> <span class="val">ec</span>=<span class="str">'echo "Exit: $?"'</span></pre></div>
+    </div>
+  </div>
+
+  <div class="step" data-n="4">
+    <h3>man pages — Your Primary Reference</h3>
+    <p>Every standard C library function and every Linux system call has a manual page. <code>man 3</code> is for C library functions (printf, malloc, etc.). <code>man 2</code> is for Linux system calls (open, read, fork, etc.). Reading man pages is a skill — learn the format and they become the fastest reference available.</p>
+    <div class="term">
+      <div class="term-bar"><div class="term-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><span class="term-label">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+      <div class="term-body"><pre><span class="p">$</span> <span class="cmd">sudo pacman</span> <span class="arg">-S</span> <span class="val">man-pages</span>  <span class="cmt"># install if not present</span>
+<span class="p">$</span> <span class="cmd">man</span> <span class="val">3</span> printf              <span class="cmt"># C library: printf</span>
+<span class="p">$</span> <span class="cmd">man</span> <span class="val">3</span> malloc              <span class="cmt"># C library: dynamic memory</span>
+<span class="p">$</span> <span class="cmd">man</span> <span class="val">2</span> open                <span class="cmt"># Linux syscall: open file</span>
+<span class="p">$</span> <span class="cmd">man</span> <span class="val">2</span> fork                <span class="cmt"># Linux syscall: create process</span></pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ 06 · ROADMAP -->
+<div class="section" id="roadmap">
+  <div class="section-title">Learning Roadmap</div>
+  <p class="section-desc">A structured path from your first hello world to writing systems-level software. Times are honest estimates for someone studying consistently — not optimistic marketing numbers.</p>
+
+  <div class="phase-block">
+    <div class="phase-header">
+      <div class="phase-left">
+        <div class="phase-num">01</div>
+        <div>
+          <div class="phase-title">Basics — Language Foundations</div>
+          <div class="phase-time">4–6 weeks · K&amp;R Chapters 1–4</div>
+        </div>
+      </div>
+      <span class="phase-badge active">active now</span>
+    </div>
+    <div class="phase-body">
+      <p>The core of the language: types, variables, operators, control flow, functions, arrays, and basic I/O. Your goal is to be able to read and write C programs that solve algorithmic problems, understand what every line compiles to, and be comfortable with the compiler's warning output.</p>
+      <p><strong style="color:var(--text)">What to build:</strong></p>
+      <span class="build-tag">temperature converter</span>
+      <span class="build-tag">character counter</span>
+      <span class="build-tag">word frequency counter</span>
+      <span class="build-tag">basic calculator</span>
+      <span class="build-tag">fibonacci sequence</span>
+      <span class="build-tag">simple sorting algorithms</span>
+      <ul class="target-list" style="margin-top:14px">
+        <li>Understand all basic types: int, char, float, double, long, short and their sizes</li>
+        <li>Write functions with correct prototypes and understand the call stack</li>
+        <li>Use arrays and understand that array names are pointers to their first element</li>
+        <li>Read and write files using fopen, fread, fwrite, fclose</li>
+        <li>Understand all escape sequences and printf format specifiers</li>
+        <li>Compile without any warnings using -Wall -Wextra -Wpedantic</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="phase-block">
+    <div class="phase-header">
+      <div class="phase-left">
+        <div class="phase-num">02</div>
+        <div>
+          <div class="phase-title">Pointers and Memory</div>
+          <div class="phase-time">4–8 weeks · K&amp;R Chapters 5–6</div>
+        </div>
+      </div>
+      <span class="phase-badge next">next</span>
+    </div>
+    <div class="phase-body">
+      <p>The part that defines C as a systems language. Pointers, pointer arithmetic, the heap, dynamic memory allocation, structs, and linked data structures. This phase takes longer than Phase 1 because the concepts are genuinely harder and the bugs are subtle. Do not rush it.</p>
+      <p><strong style="color:var(--text)">What to build:</strong></p>
+      <span class="build-tag">linked list</span>
+      <span class="build-tag">stack and queue</span>
+      <span class="build-tag">dynamic array (like std::vector)</span>
+      <span class="build-tag">string library functions from scratch</span>
+      <span class="build-tag">binary search tree</span>
+      <ul class="target-list" style="margin-top:14px">
+        <li>Understand the difference between stack and heap allocation and when to use each</li>
+        <li>Use malloc, calloc, realloc, and free without leaks (verified by Valgrind)</li>
+        <li>Understand pointer arithmetic: what ptr+1 means for different types</li>
+        <li>Write functions that take pointers and modify values through them</li>
+        <li>Implement and use structs, nested structs, and structs with pointer members</li>
+        <li>Understand and use function pointers for callbacks and dispatch tables</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="phase-block">
+    <div class="phase-header">
+      <div class="phase-left">
+        <div class="phase-num">03</div>
+        <div>
+          <div class="phase-title">Systems Programming</div>
+          <div class="phase-time">8–12 weeks · K&amp;R Ch 7–8 + POSIX</div>
+        </div>
+      </div>
+      <span class="phase-badge future">future</span>
+    </div>
+    <div class="phase-body">
+      <p>Where C is most powerful: interfacing directly with the operating system. File I/O at the syscall level, process creation and management, signals, pipes, sockets, and threading. You will write programs that talk to the kernel directly. CS:APP (Bryant &amp; O'Hallaron) is the primary reference for this phase.</p>
+      <p><strong style="color:var(--text)">What to build:</strong></p>
+      <span class="build-tag">unix shell (fork/exec/wait)</span>
+      <span class="build-tag">http server (sockets)</span>
+      <span class="build-tag">cat/grep/wc reimplementations</span>
+      <span class="build-tag">pipe-based data pipeline</span>
+      <span class="build-tag">multi-threaded producer/consumer</span>
+      <ul class="target-list" style="margin-top:14px">
+        <li>Use open, read, write, close directly (not fopen/fread wrappers)</li>
+        <li>Create processes with fork() and exec(), collect exit codes with wait()</li>
+        <li>Handle Unix signals: SIGINT, SIGTERM, SIGCHLD</li>
+        <li>Create and connect TCP sockets for client-server communication</li>
+        <li>Use pthreads: create threads, use mutexes, understand race conditions</li>
+        <li>Read the Linux kernel source for a subsystem you have used</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="phase-block">
+    <div class="phase-header">
+      <div class="phase-left">
+        <div class="phase-num">04</div>
+        <div>
+          <div class="phase-title">Real Projects</div>
+          <div class="phase-time">Ongoing — no end date</div>
+        </div>
+      </div>
+      <span class="phase-badge future">future</span>
+    </div>
+    <div class="phase-body">
+      <p>The only way to become a systems programmer is to write systems software. Pick a project that requires real C knowledge, commit to finishing it, and ship it. These projects will teach you more than any book — they are where you encounter real constraints, real bugs, and real design decisions.</p>
+      <p><strong style="color:var(--text)">Project ideas (increasing difficulty):</strong></p>
+      <span class="build-tag">text editor (like nano)</span>
+      <span class="build-tag">malloc() replacement</span>
+      <span class="build-tag">TCP chat server</span>
+      <span class="build-tag">JSON parser</span>
+      <span class="build-tag">C interpreter</span>
+      <span class="build-tag">ELF binary loader</span>
+      <span class="build-tag">kernel module</span>
+      <span class="build-tag">database engine</span>
+    </div>
+  </div>
+
+  <hr class="div">
+
+  <div class="section-title" style="font-size:24px; margin-bottom:14px;">Resources</div>
+
+  <div class="resource-grid">
+    <a class="resource-card" href="https://www.amazon.com/Programming-Language-2nd-Brian-Kernighan/dp/0131103628" target="_blank">
+      <div class="resource-type">📖 Book — Primary Reference</div>
+      <div class="resource-name">K&R — The C Programming Language</div>
+      <div class="resource-desc">Kernighan and Ritchie. Written by the creators of C. Still the definitive reference after 40+ years. Read the entire book. Do every exercise. This is the foundation everything else rests on.</div>
+      <span class="resource-tag">read first</span>
+    </a>
+    <a class="resource-card" href="https://csapp.cs.cmu.edu" target="_blank">
+      <div class="resource-type">📖 Book — Systems Programming</div>
+      <div class="resource-name">CS:APP — Computer Systems: A Programmer's Perspective</div>
+      <div class="resource-desc">Bryant &amp; O'Hallaron. C programming + how computers actually work: assembly, memory hierarchy, linking, exceptional control flow, virtual memory, I/O, networking, concurrency. The best systems programming textbook in existence.</div>
+      <span class="resource-tag">phase 2–3</span>
+    </a>
+    <a class="resource-card" href="https://godbolt.org" target="_blank">
+      <div class="resource-type">🌐 Web Tool</div>
+      <div class="resource-name">Compiler Explorer — godbolt.org</div>
+      <div class="resource-desc">Paste C code, see the assembly output in real time. Multiple compilers, multiple optimization levels, side by side. Invaluable for understanding what your code actually compiles to and how the compiler optimizes it.</div>
+      <span class="resource-tag">use constantly</span>
+    </a>
+    <a class="resource-card" href="https://cdecl.org" target="_blank">
+      <div class="resource-type">🌐 Web Tool</div>
+      <div class="resource-name">cdecl.org — C Declaration Decoder</div>
+      <div class="resource-desc">Type in a C declaration like <code>void (*signal(int, void (*)(int)))(int)</code> and get a plain English explanation. C's declaration syntax is notoriously complex — this tool decodes it instantly.</div>
+      <span class="resource-tag">pointer syntax</span>
+    </a>
+    <a class="resource-card" href="https://en.cppreference.com/w/c" target="_blank">
+      <div class="resource-type">🌐 Reference</div>
+      <div class="resource-name">cppreference.com — C Standard Library</div>
+      <div class="resource-desc">Complete reference for every C standard library function with detailed descriptions, parameters, return values, and examples. More readable than the official standard. Bookmark it.</div>
+      <span class="resource-tag">daily reference</span>
+    </a>
+    <a class="resource-card" href="https://www.man7.org/linux/man-pages/" target="_blank">
+      <div class="resource-type">🌐 Reference</div>
+      <div class="resource-name">Linux man pages online</div>
+      <div class="resource-desc">All Linux system call and C library man pages online. Use <code>man 2 syscall</code> in your terminal, but the web version is searchable. Essential for Phase 3.</div>
+      <span class="resource-tag">phase 3</span>
+    </a>
+    <a class="resource-card" href="https://github.com/torvalds/linux" target="_blank">
+      <div class="resource-type">🌐 Source Code</div>
+      <div class="resource-name">Linux Kernel Source</div>
+      <div class="resource-desc">The largest and most important C codebase in the world. Browse it on GitHub. Reading real-world C at this scale teaches style, patterns, and idioms that no tutorial covers. Start with <code>kernel/sched/</code> or <code>net/ipv4/</code>.</div>
+      <span class="resource-tag">advanced</span>
+    </a>
+    <a class="resource-card" href="https://rudv-ar.github.io/C-Phase-1" target="_blank">
+      <div class="resource-type">📓 Personal Journal</div>
+      <div class="resource-name">C-Phase-1 — Your Learning Journal</div>
+      <div class="resource-desc">Your documented learning journey — exact code, errors, discoveries, and deep explanations for every exercise. The only reference written specifically for your learning path, in your own words.</div>
+      <span class="resource-tag">yours</span>
+    </a>
+  </div>
+</div>
+
+<!-- ============================================================ 07 · PROGRESS -->
+<div class="section" id="progress">
+  <div class="section-title">Progress Tracker</div>
+  <p class="section-desc">Track your learning milestones. Checks are saved in your browser — they persist between sessions.</p>
+
+  <div class="overall-bar">
+    <div class="overall-bar-header">
+      <div class="overall-bar-title">Overall Completion</div>
+      <div class="overall-bar-pct" id="overallPct">0%</div>
+    </div>
+    <div class="bar-track"><div class="bar-fill" id="overallFill"></div></div>
+    <div class="overall-bar-sub" id="overallSub">0 of 0 milestones complete</div>
+  </div>
+
+  <div id="todoContainer"></div>
+
+  <button class="todo-reset-btn" onclick="resetAll()">↺ Reset all progress</button>
+</div>
+
+</div><!-- .content -->
+
 <script>
+// ── TAB SWITCHING ─────────────────────────────────────────────
 function show(id, btn) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   btn.classList.add('active');
+  history.replaceState(null, '', '#' + id);
 }
 
-function copyCode(btn, text) {
-  // grab the nearest pre element's text content
+// ── COPY BUTTON ───────────────────────────────────────────────
+function copyCode(btn) {
   const pre = btn.closest('.term').querySelector('pre');
-  // extract just command text (strip spans)
-  const raw = pre ? pre.innerText.replace(/^\$\s*/gm, '').trim() : text;
+  const raw = pre ? pre.innerText.trim() : '';
   navigator.clipboard.writeText(raw).then(() => {
     btn.textContent = 'copied!';
     btn.classList.add('copied');
     setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 1800);
   });
 }
+
+// ── TODO DATA ─────────────────────────────────────────────────
+const TODO_PHASES = [
+  {
+    id: 'env',
+    name: 'Environment Setup',
+    items: [
+      { id: 'env_1', title: 'Install base-devel, gcc, gdb, clang, valgrind, cmake, ninja', sub: 'sudo pacman -S base-devel gcc gdb clang lldb cmake ninja valgrind' },
+      { id: 'env_2', title: 'Install Neovim + ripgrep + fd + nodejs', sub: 'sudo pacman -S neovim ripgrep fd nodejs npm' },
+      { id: 'env_3', title: 'Configure clangd LSP in NvChad lspconfig.lua', sub: 'Open a .c file and verify :LspInfo shows clangd attached' },
+      { id: 'env_4', title: 'Verify gcc, gdb, clangd, valgrind all report their versions', sub: 'Run --version on each tool' },
+      { id: 'env_5', title: 'Set up git with name, email, and nvim as editor', sub: 'git config --global ...' },
+      { id: 'env_6', title: 'Add crun() function and cc/ccd aliases to .bashrc', sub: 'Reload with: source ~/.bashrc' },
+      { id: 'env_7', title: 'Install man-pages and verify man 3 printf works', sub: 'sudo pacman -S man-pages' },
+    ]
+  },
+  {
+    id: 'phase1',
+    name: 'Phase 1 — Basics',
+    items: [
+      { id: 'p1_1',  title: '1.1 — Hello World compiles and runs cleanly', sub: 'gcc -Wall -Wextra -Wpedantic -std=c11 with zero warnings' },
+      { id: 'p1_2',  title: '1.2 — Fahrenheit to Celsius table (while loop, int arithmetic)', sub: 'Understand integer division truncation — why 5/9=0' },
+      { id: 'p1_3',  title: '1.3 — Celsius to Fahrenheit using float/double', sub: 'Understand when to use %f vs %d, and 5.0/9 vs 5/9' },
+      { id: 'p1_4',  title: 'Character counting program using getchar()', sub: 'Count chars, words, and lines from stdin' },
+      { id: 'p1_5',  title: 'Understand all printf format specifiers: %d %f %c %s %x %p', sub: 'Write a program that uses each one correctly' },
+      { id: 'p1_6',  title: 'Understand all basic escape sequences: \\n \\t \\\\ \\0', sub: 'Know the byte value of each one' },
+      { id: 'p1_7',  title: 'Write a function and call it from main', sub: 'Understand the call stack: arguments in, return value out' },
+      { id: 'p1_8',  title: 'Use a for loop, while loop, and do-while loop', sub: 'Know when to use each' },
+      { id: 'p1_9',  title: 'Declare and use a 1D array', sub: 'Understand array indexing starts at 0' },
+      { id: 'p1_10', title: 'Read input from the user with scanf()', sub: 'Handle a single int, float, and string' },
+      { id: 'p1_11', title: 'Write a recursive function (e.g. factorial or fibonacci)', sub: 'Understand stack frames and base cases' },
+      { id: 'p1_12', title: 'Complete K&R Chapter 1 all exercises', sub: 'Document errors and discoveries in C-Phase-1' },
+    ]
+  },
+  {
+    id: 'phase2',
+    name: 'Phase 2 — Pointers and Memory',
+    items: [
+      { id: 'p2_1', title: 'Declare a pointer, assign an address with &, dereference with *', sub: 'Understand what a pointer actually is: an address in memory' },
+      { id: 'p2_2', title: 'Swap two integers using a function that takes pointers', sub: 'Classic first pointer exercise' },
+      { id: 'p2_3', title: 'Understand pointer arithmetic: ptr+1 advances by sizeof(*ptr) bytes', sub: 'Verify with printf("%p", ptr) before and after' },
+      { id: 'p2_4', title: 'Allocate memory with malloc() and free it with free()', sub: 'Verify no leaks with valgrind --leak-check=full' },
+      { id: 'p2_5', title: 'Implement a dynamic array that grows with realloc()', sub: 'Handle the case where realloc() returns NULL' },
+      { id: 'p2_6', title: 'Understand the difference between char* and char[]', sub: 'Know which is in read-only memory and which is on the stack' },
+      { id: 'p2_7', title: 'Implement strlen, strcpy, strcat from scratch without <string.h>', sub: 'Understand null termination at the byte level' },
+      { id: 'p2_8', title: 'Define and use a struct', sub: 'Understand struct layout, padding, and pointer to struct' },
+      { id: 'p2_9', title: 'Implement a singly linked list with insert, delete, print', sub: 'Use malloc for each node, free all nodes at the end' },
+      { id: 'p2_10', title: 'Declare and call a function pointer', sub: 'Use it for a simple callback or dispatch table' },
+      { id: 'p2_11', title: 'Run all pointer programs through ASAN with zero errors', sub: 'gcc -fsanitize=address,undefined ...' },
+      { id: 'p2_12', title: 'Complete K&R Chapters 5–6 all exercises', sub: 'Document everything in C-Phase-1' },
+    ]
+  },
+  {
+    id: 'phase3',
+    name: 'Phase 3 — Systems Programming',
+    items: [
+      { id: 'p3_1', title: 'Open, read, and write a file using syscalls: open(), read(), write(), close()', sub: 'Not fopen/fread — the raw POSIX interface' },
+      { id: 'p3_2', title: 'Create a child process with fork() and wait for it with wait()', sub: 'Understand PID, parent/child relationship, exit status' },
+      { id: 'p3_3', title: 'Replace a process image with execve()', sub: 'Combine fork+exec to run an external program' },
+      { id: 'p3_4', title: 'Handle SIGINT (Ctrl+C) with a custom signal handler', sub: 'Use sigaction(), not signal()' },
+      { id: 'p3_5', title: 'Create a pipe and use it for parent-child IPC', sub: 'Understand pipe() + fork() pattern' },
+      { id: 'p3_6', title: 'Write a TCP server that accepts and responds to connections', sub: 'socket(), bind(), listen(), accept(), send(), recv()' },
+      { id: 'p3_7', title: 'Write a minimal Unix shell: prompt, parse, fork, exec, wait', sub: 'Handle Ctrl+C, exit, and at least one built-in command' },
+      { id: 'p3_8', title: 'Use pthreads to run two functions concurrently', sub: 'Protect shared data with a mutex' },
+      { id: 'p3_9', title: 'Read the source of a Linux syscall you have used', sub: 'Browse github.com/torvalds/linux' },
+      { id: 'p3_10', title: 'Complete CS:APP Chapters 1–8', sub: 'This is the foundation of real systems understanding' },
+    ]
+  },
+  {
+    id: 'phase4',
+    name: 'Phase 4 — Real Projects',
+    items: [
+      { id: 'p4_1', title: 'Ship a complete, working C project to GitHub', sub: 'With a Makefile, README, and clean git history' },
+      { id: 'p4_2', title: 'Build something that uses dynamic memory and has zero Valgrind errors', sub: 'Run valgrind --leak-check=full on exit' },
+      { id: 'p4_3', title: 'Write a project that uses sockets or file I/O at the syscall level', sub: 'No fopen/fread wrappers' },
+      { id: 'p4_4', title: 'Read and understand 500+ lines of real-world C code', sub: 'Linux kernel, SQLite, Redis, or similar' },
+      { id: 'p4_5', title: 'Find and fix a bug in your own code using gdb alone', sub: 'Set a breakpoint, step through, inspect memory' },
+    ]
+  }
+];
+
+// ── STORAGE HELPERS ───────────────────────────────────────────
+const STORAGE_KEY = 'cdev_progress_v1';
+
+function loadProgress() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+  } catch { return {}; }
+}
+
+function saveProgress(data) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch {}
+}
+
+// ── RENDER TODOS ──────────────────────────────────────────────
+function renderTodos() {
+  const progress = loadProgress();
+  const container = document.getElementById('todoContainer');
+  container.innerHTML = '';
+
+  let totalItems = 0, totalDone = 0;
+
+  TODO_PHASES.forEach(phase => {
+    const doneInPhase = phase.items.filter(i => progress[i.id]).length;
+    const totalInPhase = phase.items.length;
+    totalItems += totalInPhase;
+    totalDone += doneInPhase;
+    const pct = totalInPhase ? Math.round((doneInPhase / totalInPhase) * 100) : 0;
+
+    const phaseEl = document.createElement('div');
+    phaseEl.className = 'todo-phase' + (doneInPhase > 0 ? ' open' : '');
+    phaseEl.id = 'phase_' + phase.id;
+
+    phaseEl.innerHTML = `
+      <div class="todo-phase-header" onclick="togglePhase('${phase.id}')">
+        <div class="todo-phase-left">
+          <div class="todo-phase-name">${phase.name}</div>
+          <div class="todo-phase-progress">${doneInPhase}/${totalInPhase}</div>
+        </div>
+        <div class="todo-phase-bar-wrap">
+          <div class="mini-bar"><div class="mini-bar-fill" style="width:${pct}%"></div></div>
+          <span style="font-size:10px;color:var(--muted);min-width:32px;text-align:right">${pct}%</span>
+          <span class="toggle-icon">›</span>
+        </div>
+      </div>
+      <div class="todo-items" id="items_${phase.id}">
+        ${phase.items.map(item => `
+          <div class="todo-item${progress[item.id] ? ' done' : ''}" onclick="toggleItem('${item.id}')">
+            <div class="todo-checkbox"></div>
+            <div class="todo-text">
+              <div class="todo-title">${item.title}</div>
+              <div class="todo-sub">${item.sub}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+    container.appendChild(phaseEl);
+  });
+
+  updateOverallBars(totalDone, totalItems);
+}
+
+function togglePhase(id) {
+  const el = document.getElementById('phase_' + id);
+  el.classList.toggle('open');
+}
+
+function toggleItem(itemId) {
+  const progress = loadProgress();
+  progress[itemId] = !progress[itemId];
+  saveProgress(progress);
+  renderTodos();
+}
+
+function resetAll() {
+  if (confirm('Reset all progress? This cannot be undone.')) {
+    localStorage.removeItem(STORAGE_KEY);
+    renderTodos();
+  }
+}
+
+function updateOverallBars(done, total) {
+  const pct = total ? Math.round((done / total) * 100) : 0;
+  document.getElementById('overallPct').textContent = pct + '%';
+  document.getElementById('overallFill').style.width = pct + '%';
+  document.getElementById('overallSub').textContent = `${done} of ${total} milestones complete`;
+  document.getElementById('heroProgressFill').style.width = pct + '%';
+  document.getElementById('heroProgressPct').textContent = pct + '%';
+}
+
+// ── RESTORE TAB FROM HASH ─────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  renderTodos();
+  const hash = window.location.hash.slice(1);
+  if (hash) {
+    const target = document.getElementById(hash);
+    const btn = document.querySelector(`[onclick="show('${hash}', this)"]`);
+    if (target && btn) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      target.classList.add('active');
+      btn.classList.add('active');
+    }
+  }
+});
 </script>
 </body>
 </html>
